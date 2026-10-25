@@ -14,8 +14,6 @@
 - 内置命令和图形也通过 Provider 注册。
 - tree/show 返回结构化 Snapshot，CLI 只负责排版。
 
-Phase 1 实现 `rect`、`circle`、`ellipse`、`line`、`text`、`g`。`box` 属于后续插件阶段，本阶段返回未注册类型错误。
-
 ### 1.2 模块划分
 
 ```text
@@ -278,30 +276,30 @@ Phase 1 边界：
 
 ### 3.1 模块划分
 
-- [x] 实际目录与本文档一致。
-- [x] 修订记录覆盖值对象位置、XmlSvgCodec 拆分、queries 和 errors 模块。
-- [x] 查询、Renderer 和领域模型职责已分离。
-- [x] 已挂载容器结构修改统一经过 Document。
+- 实际目录与本文档一致。
+- 修订记录覆盖值对象位置、XmlSvgCodec 拆分、queries 和 errors 模块。
+- 查询、Renderer 和领域模型职责已分离。
+- 已挂载容器结构修改统一经过 Document。
 
 ### 3.2 依赖与分派
 
-- [x] domain 未导入 CLI、Infrastructure、Node.js fs 或 XML 库。
-- [x] CLI 只通过 CommandRegistry/CommandProcessor 执行命令。
-- [x] 命令名分派只集中于 CommandRegistry。
-- [x] 图形类型分派只集中于 ShapeFactory。
-- [x] SVG Parser 通过 ShapeFactory 创建图形。
-- [x] Command 不依赖 CLI Renderer。
+- domain 未导入 CLI、Infrastructure、Node.js fs 或 XML 库。
+- CLI 只通过 CommandRegistry/CommandProcessor 执行命令。
+- 命令名分派只集中于 CommandRegistry。
+- 图形类型分派只集中于 ShapeFactory。
+- SVG Parser 通过 ShapeFactory 创建图形。
+- Command 不依赖 CLI Renderer。
 
 ### 3.3 行为
 
-- [x] 支持的编辑操作均使用 PreparedEdit。
-- [x] Group 与叶子图形统一支持标准操作。
-- [x] 结构命令恢复原父节点、成员顺序和 z-order。
-- [x] 失败的结构修改不改变文档或历史。
-- [x] 文档命令清空历史并门禁 undo/redo。
-- [x] 普通 tree/show/help/canvas 查询不属于文档修改。
-- [x] redo 后新编辑清空 redo 栈。
-- [x] 插件复合容器可通过 canUngroup=false 禁止 ungroup。
+- 支持的编辑操作均使用 PreparedEdit。
+- Group 与叶子图形统一支持标准操作。
+- 结构命令恢复原父节点、成员顺序和 z-order。
+- 失败的结构修改不改变文档或历史。
+- 文档命令清空历史并门禁 undo/redo。
+- 普通 tree/show/help/canvas 查询不属于文档修改。
+- redo 后新编辑清空 redo 栈。
+- 插件复合容器可通过 canUngroup=false 禁止 ungroup。
 
 ## 4. 质量保证
 
