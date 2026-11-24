@@ -8,15 +8,20 @@ export type SvgEntryKind = "file" | "directory" | "other";
 
 export type InspectSvgEntry = (uri: Uri) => Promise<SvgEntryKind>;
 
+export function isSvgUri(
+  uri: Pick<Uri, "scheme" | "path">
+): boolean {
+  return (
+    uri.scheme === "file" &&
+    uri.path.toLowerCase().endsWith(".svg")
+  );
+}
+
 export function classifySvgFile(
   uri: Pick<Uri, "scheme" | "path">,
   kind: SvgEntryKind
 ): boolean {
-  return (
-    kind === "file" &&
-    uri.scheme === "file" &&
-    uri.path.toLowerCase().endsWith(".svg")
-  );
+  return kind === "file" && isSvgUri(uri);
 }
 
 export class SvgFileDecorationProvider
@@ -27,22 +32,15 @@ export class SvgFileDecorationProvider
   async provideFileDecoration(
     uri: Uri
   ): Promise<FileDecoration | undefined> {
-    if (!hasSvgPath(uri)) {
+    if (!isSvgUri(uri)) {
       return undefined;
     }
 
     const kind = await this.inspectEntry(uri);
-    if (!classifySvgFile(uri, kind)) {
+    if (kind !== "file") {
       return undefined;
     }
 
     return { badge: "[]" };
   }
-}
-
-function hasSvgPath(uri: Pick<Uri, "scheme" | "path">): boolean {
-  return (
-    uri.scheme === "file" &&
-    uri.path.toLowerCase().endsWith(".svg")
-  );
 }

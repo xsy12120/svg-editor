@@ -109,6 +109,24 @@ describe("SvgFileDecorationProvider", () => {
     expect(inspectEntry).not.toHaveBeenCalled();
   });
 
+  it("evaluates the SVG path rule only once", async () => {
+    let pathReads = 0;
+    const target = {
+      scheme: "file",
+      get path(): string {
+        pathReads += 1;
+        return "/workspace/example.svg";
+      }
+    } as Uri;
+    const provider = new SvgFileDecorationProvider(
+      vi.fn(async () => "file" as const)
+    );
+
+    await provider.provideFileDecoration(target);
+
+    expect(pathReads).toBe(1);
+  });
+
   it("does not modify the URI it receives", async () => {
     const uri = fileUri("/workspace/example.svg");
     const originalUri = { ...uri };
