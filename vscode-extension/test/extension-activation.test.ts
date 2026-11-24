@@ -58,4 +58,20 @@ describe("extension activation", () => {
     expect(activeDocumentSymbolProviders()).toHaveLength(1);
     expect(secondContext.subscriptions).toHaveLength(2);
   });
+
+  it("creates fresh providers for each activation", () => {
+    const firstContext = createFakeExtensionContext();
+    activate(firstContext as never);
+    const firstBadgeProvider = activeFileDecorationProviders()[0];
+    const firstOutlineProvider = activeDocumentSymbolProviders()[0];
+    firstContext.dispose();
+
+    const secondContext = createFakeExtensionContext();
+    activate(secondContext as never);
+    const secondBadgeProvider = activeFileDecorationProviders()[0];
+    const secondOutlineProvider = activeDocumentSymbolProviders()[0];
+
+    expect(secondBadgeProvider).not.toBe(firstBadgeProvider);
+    expect(secondOutlineProvider).not.toBe(firstOutlineProvider);
+  });
 });
