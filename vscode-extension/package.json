@@ -1,0 +1,26 @@
+{
+  "name": "svg-editor-vscode",
+  "displayName": "SVG Editor",
+  "version": "0.0.1",
+  "private": true,
+  "description": "VSCode integration for SVG file decorations and document outlines",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/vscode": "^1.95.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}
