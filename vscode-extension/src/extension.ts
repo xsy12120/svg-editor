@@ -1,15 +1,27 @@
 import type {
   DocumentSymbolProvider,
   ExtensionContext,
-  FileDecorationProvider
+  Uri
 } from "vscode";
-import { languages, window } from "vscode";
+import { FileType, languages, window, workspace } from "vscode";
 
-const badgeProvider: FileDecorationProvider = {
-  provideFileDecoration(): undefined {
-    return undefined;
+import {
+  SvgFileDecorationProvider,
+  type SvgEntryKind
+} from "./svgFileDecoration.js";
+
+const badgeProvider = new SvgFileDecorationProvider(
+  async (uri: Uri): Promise<SvgEntryKind> => {
+    const entry = await workspace.fs.stat(uri);
+    if ((entry.type & FileType.File) !== 0) {
+      return "file";
+    }
+    if ((entry.type & FileType.Directory) !== 0) {
+      return "directory";
+    }
+    return "other";
   }
-};
+);
 
 const outlineProvider: DocumentSymbolProvider = {
   provideDocumentSymbols(): [] {

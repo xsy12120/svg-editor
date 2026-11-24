@@ -17,6 +17,21 @@ export interface FakeExtensionContext {
   dispose(): void;
 }
 
+export enum FileType {
+  Unknown = 0,
+  File = 1,
+  Directory = 2,
+  SymbolicLink = 64
+}
+
+export const workspace = {
+  fs: {
+    async stat(): Promise<never> {
+      throw new Error("workspace.fs.stat is not configured in tests");
+    }
+  }
+};
+
 export const window = {
   registerFileDecorationProvider(provider: unknown): MockDisposable {
     return registerProvider(

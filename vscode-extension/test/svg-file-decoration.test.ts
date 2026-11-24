@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import type { Uri } from "vscode";
 
 import {
   classifySvgFile,
@@ -11,8 +12,8 @@ interface TestUri {
   readonly path: string;
 }
 
-function fileUri(path: string): TestUri {
-  return { scheme: "file", path };
+function fileUri(path: string): Uri {
+  return { scheme: "file", path } as Uri;
 }
 
 describe("classifySvgFile", () => {
