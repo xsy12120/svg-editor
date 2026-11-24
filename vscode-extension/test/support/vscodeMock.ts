@@ -24,6 +24,34 @@ export enum FileType {
   SymbolicLink = 64
 }
 
+export interface Position {
+  readonly line: number;
+  readonly character: number;
+}
+
+export class Range {
+  constructor(
+    readonly start: Position,
+    readonly end: Position
+  ) {}
+}
+
+export enum SymbolKind {
+  Object = 19
+}
+
+export class DocumentSymbol {
+  children: DocumentSymbol[] = [];
+
+  constructor(
+    readonly name: string,
+    readonly detail: string,
+    readonly kind: SymbolKind,
+    readonly range: Range,
+    readonly selectionRange: Range
+  ) {}
+}
+
 export const workspace = {
   fs: {
     async stat(): Promise<never> {
