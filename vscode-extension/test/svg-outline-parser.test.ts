@@ -117,4 +117,38 @@ describe("parseSvgOutline", () => {
       )
     ).toBe("text");
   });
+
+  it.each([
+    {
+      description: "an element with no closing tag",
+      source: '<svg id="root"><g id="layer">'
+    },
+    {
+      description: "a half-written opening tag",
+      source: '<svg id="root"><rect id="box"'
+    },
+    {
+      description: "an unclosed attribute quote",
+      source: '<svg id="root><g/></svg>'
+    },
+    {
+      description: "an empty document",
+      source: ""
+    },
+    {
+      description: "a declaration without an SVG root",
+      source: '<?xml version="1.0"?>'
+    },
+    {
+      description: "a valid document after an edit made it incomplete",
+      source: [
+        '<svg id="root">',
+        '  <g id="layer">',
+        '    <rect id="box"/>',
+        "  </g>"
+      ].join("\n")
+    }
+  ])("returns null for $description", ({ source }) => {
+    expect(parseSvgOutline(source)).toBeNull();
+  });
 });
