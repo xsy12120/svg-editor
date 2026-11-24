@@ -13,13 +13,17 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "build:integration": "tsc -p tsconfig.integration.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:integration": "npm run build && npm run build:integration && node integration-dist/run.js",
+    "test:all": "npm test && npm run test:integration",
     "test:watch": "vitest"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
     "@types/vscode": "^1.95.0",
+    "@vscode/test-electron": "^3.1.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
   }
