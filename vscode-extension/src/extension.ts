@@ -4,14 +4,11 @@ import type {
 } from "vscode";
 import { FileType, languages, window, workspace } from "vscode";
 
-import {
-  SvgFileDecorationProvider,
-  type SvgEntryKind
-} from "./svgFileDecoration.js";
+import { SvgFileDecorationProvider } from "./svgFileDecoration.js";
 import { SvgOutlineDocumentSymbolProvider } from "./svgOutlineProvider.js";
 
-const badgeProvider = new SvgFileDecorationProvider(
-  async (uri: Uri): Promise<SvgEntryKind> => {
+export function activate(context: ExtensionContext): void {
+  const badgeProvider = new SvgFileDecorationProvider(async (uri: Uri) => {
     const entry = await workspace.fs.stat(uri);
     if ((entry.type & FileType.File) !== 0) {
       return "file";
@@ -20,12 +17,9 @@ const badgeProvider = new SvgFileDecorationProvider(
       return "directory";
     }
     return "other";
-  }
-);
+  });
+  const outlineProvider = new SvgOutlineDocumentSymbolProvider();
 
-const outlineProvider = new SvgOutlineDocumentSymbolProvider();
-
-export function activate(context: ExtensionContext): void {
   context.subscriptions.push(
     window.registerFileDecorationProvider(badgeProvider),
     languages.registerDocumentSymbolProvider(
