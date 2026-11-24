@@ -1,5 +1,4 @@
 import type {
-  DocumentSymbolProvider,
   ExtensionContext,
   Uri
 } from "vscode";
@@ -9,6 +8,7 @@ import {
   SvgFileDecorationProvider,
   type SvgEntryKind
 } from "./svgFileDecoration.js";
+import { SvgOutlineDocumentSymbolProvider } from "./svgOutlineProvider.js";
 
 const badgeProvider = new SvgFileDecorationProvider(
   async (uri: Uri): Promise<SvgEntryKind> => {
@@ -23,11 +23,7 @@ const badgeProvider = new SvgFileDecorationProvider(
   }
 );
 
-const outlineProvider: DocumentSymbolProvider = {
-  provideDocumentSymbols(): [] {
-    return [];
-  }
-};
+const outlineProvider = new SvgOutlineDocumentSymbolProvider();
 
 export function activate(context: ExtensionContext): void {
   context.subscriptions.push(
