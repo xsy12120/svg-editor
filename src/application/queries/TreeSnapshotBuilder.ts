@@ -2,6 +2,12 @@ import type { Document } from "../../domain/model/Document.js";
 import { ContainerShape } from "../../domain/shapes/ContainerShape.js";
 import type { Shape } from "../../domain/shapes/Shape.js";
 import type {
+  DocumentChangeState
+} from "../context/DocumentChangeState.js";
+import {
+  EMPTY_DOCUMENT_CHANGE_STATE
+} from "../context/DocumentChangeState.js";
+import type {
   TreeDecorationContext,
   TreeDecorationResolver,
   TreeDecorationTarget
@@ -18,9 +24,15 @@ export class TreeSnapshotBuilder {
       new TreeDecoratorRegistry()
   ) {}
 
-  build(document: Document, rootId?: string): TreeSnapshot {
+  build(
+    document: Document,
+    rootId?: string,
+    changes: DocumentChangeState = EMPTY_DOCUMENT_CHANGE_STATE
+  ): TreeSnapshot {
     const context: TreeDecorationContext =
-      rootId === undefined ? { document } : { document, rootId };
+      rootId === undefined
+        ? { document, changes }
+        : { document, rootId, changes };
     const decorations =
       rootId === undefined
         ? this.decorators.decorate(

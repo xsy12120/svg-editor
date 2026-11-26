@@ -36,6 +36,7 @@ export class SaveDocumentCommand implements DocumentCommand<EditorSession> {
       throw new CommandRejectedError(`cannot write file: ${path}`);
     }
     session.setDocumentPath(path);
+    session.markSaved();
 
     return {
       success: true,

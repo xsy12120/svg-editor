@@ -1,4 +1,5 @@
 import type { ShapeDescriptor } from "../../domain/shapes/ShapeDescriptor.js";
+import type { DocumentChangeState } from "./DocumentChangeState.js";
 
 export interface EditorShapeContext {
   readonly id: string;
@@ -17,4 +18,5 @@ export interface EditorDocumentContext {
 export interface EditorCommandContext {
   readonly document: EditorDocumentContext | null;
   readonly documentPath: string | null;
+  readonly changes: DocumentChangeState;
 }

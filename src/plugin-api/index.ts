@@ -8,6 +8,9 @@ export type {
   EditorDocumentContext,
   EditorShapeContext
 } from "../application/context/EditorCommandContext.js";
+export type {
+  DocumentChangeState
+} from "../application/context/DocumentChangeState.js";
 export type { Command } from "../application/commands/Command.js";
 export type { CommandResult } from "../application/commands/CommandResult.js";
 export type {

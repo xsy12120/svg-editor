@@ -33,7 +33,11 @@ export class TreeCommand implements QueryCommand<EditorSession> {
       affectedIds: [],
       view: {
         kind: "tree",
-        snapshot: this.snapshotBuilder.build(document, this.rootId)
+        snapshot: this.snapshotBuilder.build(
+          document,
+          this.rootId,
+          session.changes
+        )
       }
     };
   }

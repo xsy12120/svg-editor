@@ -1,5 +1,6 @@
 import type { Document } from "../../domain/model/Document.js";
 import type { ShapeAttribute } from "../../domain/shapes/ShapeDescriptor.js";
+import type { DocumentChangeState } from "../context/DocumentChangeState.js";
 
 export interface TreeDecorationTarget {
   readonly id: string;
@@ -12,6 +13,7 @@ export interface TreeDecorationTarget {
 export interface TreeDecorationContext {
   readonly document: Document;
   readonly rootId?: string;
+  readonly changes: DocumentChangeState;
 }
 
 export interface TreeDecorator {

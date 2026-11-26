@@ -7,6 +7,7 @@ import type {
   TreeDecorationTarget
 } from "../../src/application/extensions/TreeDecorator.js";
 import { TreeSnapshotBuilder } from "../../src/application/queries/TreeSnapshotBuilder.js";
+import { EMPTY_DOCUMENT_CHANGE_STATE } from "../../src/application/context/DocumentChangeState.js";
 import { Document } from "../../src/domain/model/Document.js";
 import { Group } from "../../src/domain/shapes/Group.js";
 import { Rect } from "../../src/domain/shapes/Rect.js";
@@ -42,7 +43,8 @@ describe("TreeDecorator extension point", () => {
     registry.register(decorator("other", 20, () => ["other"]));
 
     const context: TreeDecorationContext = {
-      document: createDocument()
+      document: createDocument(),
+      changes: EMPTY_DOCUMENT_CHANGE_STATE
     };
     const target: TreeDecorationTarget = {
       id: "g1",
