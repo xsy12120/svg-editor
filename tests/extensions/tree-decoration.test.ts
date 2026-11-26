@@ -116,7 +116,9 @@ describe("TreeDecorator extension point", () => {
   });
 
   it("keeps the tree unchanged when no decorators are registered", () => {
-    const snapshot = new TreeSnapshotBuilder().build(createDocument());
+    const snapshot = new TreeSnapshotBuilder(
+      new TreeDecoratorRegistry()
+    ).build(createDocument());
 
     expect(new CliTreeRenderer().render(snapshot)).toBe(
       [

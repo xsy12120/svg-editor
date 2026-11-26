@@ -5,6 +5,7 @@ import { ShowCommand } from "../../src/application/commands/ShowCommand.js";
 import { TreeCommand } from "../../src/application/commands/TreeCommand.js";
 import { ShapeDetailsSnapshotBuilder } from "../../src/application/queries/ShapeDetailsSnapshotBuilder.js";
 import { TreeSnapshotBuilder } from "../../src/application/queries/TreeSnapshotBuilder.js";
+import { TreeDecoratorRegistry } from "../../src/application/extensions/TreeDecoratorRegistry.js";
 import { Group } from "../../src/domain/shapes/Group.js";
 import { Rect } from "../../src/domain/shapes/Rect.js";
 
@@ -21,7 +22,9 @@ function createSession(): EditorSession {
 
 describe("structured display queries", () => {
   it("returns a tree snapshot without formatting text", () => {
-    const command = new TreeCommand(new TreeSnapshotBuilder());
+    const command = new TreeCommand(
+      new TreeSnapshotBuilder(new TreeDecoratorRegistry())
+    );
     const result = command.execute(createSession());
 
     expect(result.view).toEqual({

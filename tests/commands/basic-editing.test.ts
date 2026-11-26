@@ -6,6 +6,7 @@ import { DeleteShapeCommand } from "../../src/application/commands/DeleteShapeCo
 import { MoveShapeCommand } from "../../src/application/commands/MoveShapeCommand.js";
 import { ScaleShapeCommand } from "../../src/application/commands/ScaleShapeCommand.js";
 import { SetAttributeCommand } from "../../src/application/commands/SetAttributeCommand.js";
+import { AttributeHandlerRegistry } from "../../src/application/extensions/AttributeHandlerRegistry.js";
 import { CommandInvoker } from "../../src/application/history/CommandInvoker.js";
 import { RectProvider } from "../../src/plugins/builtin-shapes/index.js";
 import { ShapeFactory } from "../../src/application/shapes/ShapeFactory.js";
@@ -112,7 +113,12 @@ describe("basic editing commands", () => {
     const shape = addRect(harness);
 
     const result = harness.invoker.execute(
-      new SetAttributeCommand("r1", "fill", "blue")
+      new SetAttributeCommand(
+        "r1",
+        "fill",
+        "blue",
+        new AttributeHandlerRegistry()
+      )
     );
     expect(result.message).toBe('rect#r1 updated: fill="blue"');
     expect(shape.fill).toBe("blue");

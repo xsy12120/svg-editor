@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { EditorSession } from "../../src/application/EditorSession.js";
 import { SetAttributeCommandProvider } from "../../src/application/commands/SetAttributeCommandProvider.js";
 import { SaveDocumentCommand } from "../../src/application/commands/SaveDocumentCommand.js";
+import { AttributeHandlerRegistry } from "../../src/application/extensions/AttributeHandlerRegistry.js";
 import { CommandInvoker } from "../../src/application/history/CommandInvoker.js";
 import type { FileStore } from "../../src/application/ports/FileStore.js";
 import type { SvgCodec } from "../../src/application/ports/SvgCodec.js";
@@ -85,7 +86,9 @@ describe("EditorSession document change state", () => {
     const invoker = new CommandInvoker(session);
 
     invoker.execute(
-      new SetAttributeCommandProvider().create(["rect", "fill", "red"])
+      new SetAttributeCommandProvider(
+        new AttributeHandlerRegistry()
+      ).create(["rect", "fill", "red"])
     );
     expect(session.changes.isDirty).toBe(true);
 

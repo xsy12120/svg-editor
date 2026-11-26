@@ -12,7 +12,6 @@ import type {
   TreeDecorationResolver,
   TreeDecorationTarget
 } from "../extensions/TreeDecorator.js";
-import { TreeDecoratorRegistry } from "../extensions/TreeDecoratorRegistry.js";
 import type {
   TreeSnapshot,
   TreeSnapshotNode
@@ -20,8 +19,7 @@ import type {
 
 export class TreeSnapshotBuilder {
   constructor(
-    private readonly decorators: TreeDecorationResolver =
-      new TreeDecoratorRegistry()
+    private readonly decorators: TreeDecorationResolver
   ) {}
 
   build(

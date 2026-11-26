@@ -130,4 +130,37 @@ describe("architecture dependency rules", () => {
     expect(hostSource).not.toContain("error: plugin");
     expect(loaderSource).not.toContain("error: plugin");
   });
+
+  it("requires explicit extension resolvers in production constructors", async () => {
+    const files = [
+      join(
+        projectRoot,
+        "src",
+        "application",
+        "commands",
+        "SetAttributeCommand.ts"
+      ),
+      join(
+        projectRoot,
+        "src",
+        "application",
+        "commands",
+        "SetAttributeCommandProvider.ts"
+      ),
+      join(
+        projectRoot,
+        "src",
+        "application",
+        "queries",
+        "TreeSnapshotBuilder.ts"
+      )
+    ];
+
+    for (const file of files) {
+      const source = await readFile(file, "utf8");
+      expect(source).not.toMatch(
+        /new (?:AttributeHandlerRegistry|TreeDecoratorRegistry)\(\)/
+      );
+    }
+  });
 });

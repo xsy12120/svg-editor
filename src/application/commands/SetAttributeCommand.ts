@@ -1,6 +1,5 @@
 import type { EditorSession } from "../EditorSession.js";
 import type { AttributeHandlerResolver } from "../extensions/AttributeHandler.js";
-import { AttributeHandlerRegistry } from "../extensions/AttributeHandlerRegistry.js";
 import { AttributeHandlerEdit } from "./AttributeHandlerEdit.js";
 import type { PreparedEdit } from "./PreparedEdit.js";
 import { SetAttributeEdit } from "./SetAttributeEdit.js";
@@ -14,8 +13,7 @@ export class SetAttributeCommand implements UndoableCommand<EditorSession> {
     private readonly id: string,
     private readonly name: string,
     private readonly value: string,
-    private readonly handlers: AttributeHandlerResolver =
-      new AttributeHandlerRegistry()
+    private readonly handlers: AttributeHandlerResolver
   ) {}
 
   prepare(session: EditorSession): PreparedEdit<EditorSession> {

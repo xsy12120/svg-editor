@@ -141,7 +141,9 @@ describe("dir command plugin", () => {
     harness.session.markSaved();
     harness.host.activate(dirPlugin, dirPluginManifest);
     harness.invoker.execute(
-      new SetAttributeCommandProvider().create(["rect", "fill", "red"])
+      new SetAttributeCommandProvider(
+        new AttributeHandlerRegistry()
+      ).create(["rect", "fill", "red"])
     );
 
     const result = harness.processor.execute(
@@ -168,7 +170,9 @@ describe("dir command plugin", () => {
     harness.session.markSaved();
     harness.host.activate(dirPlugin, dirPluginManifest);
     harness.invoker.execute(
-      new SetAttributeCommandProvider().create(["rect", "fill", "red"])
+      new SetAttributeCommandProvider(
+        new AttributeHandlerRegistry()
+      ).create(["rect", "fill", "red"])
     );
     expect(harness.session.changes.isDirty).toBe(true);
 

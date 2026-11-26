@@ -116,7 +116,9 @@ describe("stats command plugin", () => {
       success: true
     });
     invoker.execute(
-      new SetAttributeCommandProvider().create(["rect", "fill", "red"])
+      new SetAttributeCommandProvider(
+        new AttributeHandlerRegistry()
+      ).create(["rect", "fill", "red"])
     );
 
     processor.execute(commands.create("stats", []));
