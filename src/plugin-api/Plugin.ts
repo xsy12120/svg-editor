@@ -2,6 +2,7 @@ import type { EditorCommandContext } from "../application/context/EditorCommandC
 import type { AttributeHandler } from "../application/extensions/AttributeHandler.js";
 import type { CommandProvider } from "../application/extensions/CommandProvider.js";
 import type { TreeDecorator } from "../application/extensions/TreeDecorator.js";
+import type { DirectoryReader } from "../application/ports/DirectoryReader.js";
 import type { ShapeProvider } from "../application/shapes/ShapeProvider.js";
 
 export type PluginOptions = Readonly<Record<string, unknown>>;
@@ -18,7 +19,12 @@ export interface PluginManifest {
   readonly contributes: PluginContributions;
 }
 
+export interface PluginServices {
+  readonly directoryReader?: DirectoryReader;
+}
+
 export interface PluginRegistrationContext {
+  readonly services: PluginServices;
   registerShape(provider: ShapeProvider): void;
   registerCommand(provider: CommandProvider<EditorCommandContext>): void;
   registerTreeDecorator(decorator: TreeDecorator): void;

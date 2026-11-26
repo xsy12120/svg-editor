@@ -15,6 +15,7 @@ export interface ProcessResult {
 interface RunCliOptions {
   readonly npmScript?: boolean;
   readonly cliArgs?: readonly string[];
+  readonly cwd?: string;
 }
 
 export function runCli(
@@ -36,7 +37,7 @@ export function runCli(
             ...(options.cliArgs ?? [])
           ];
     const child = spawn(process.execPath, args, {
-      cwd: projectRoot,
+      cwd: options.cwd ?? projectRoot,
       env: {
         ...process.env,
         FORCE_COLOR: "0",

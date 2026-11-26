@@ -43,6 +43,12 @@ export type {
   PluginRegistrationContext,
   SvgPlugin
 } from "./Plugin.js";
+export type { PluginServices } from "./Plugin.js";
+export type {
+  DirectoryEntry,
+  DirectoryEntryKind,
+  DirectoryReader
+} from "../application/ports/DirectoryReader.js";
 export type {
   SvgElementDescriptor,
   SvgShapeReadRequest,

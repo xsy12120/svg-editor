@@ -1,5 +1,6 @@
 {
   "plugins": [
-    { "module": "./src/plugins/command-stats" }
+    { "module": "./src/plugins/command-stats" },
+    { "module": "./src/plugins/command-dir" }
   ]
 }

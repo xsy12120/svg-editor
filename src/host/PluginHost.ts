@@ -10,6 +10,7 @@ import type {
   PluginManifest,
   PluginOptions,
   PluginRegistrationContext,
+  PluginServices,
   SvgPlugin
 } from "../plugin-api/Plugin.js";
 
@@ -34,14 +35,17 @@ const categories: readonly Category[] = [
 ];
 
 export class PluginHost {
-  constructor(private readonly registries: PluginHostRegistries) {}
+  constructor(
+    private readonly registries: PluginHostRegistries,
+    private readonly services: PluginServices = {}
+  ) {}
 
   activate(
     plugin: SvgPlugin,
     manifest: PluginManifest,
     options?: PluginOptions
   ): PluginActivationResult {
-    const staged = new StagedPluginContext();
+    const staged = new StagedPluginContext(this.services);
     try {
       plugin.activate(staged, options);
     } catch (error) {
@@ -119,6 +123,8 @@ class StagedPluginContext implements PluginRegistrationContext {
   readonly commands: CommandProvider<EditorCommandContext>[] = [];
   readonly decorators: TreeDecorator[] = [];
   readonly attributes: AttributeHandler[] = [];
+
+  constructor(readonly services: PluginServices) {}
 
   registerShape(provider: ShapeProvider): void {
     this.add("shapes", provider.typeName, this.shapes, provider);

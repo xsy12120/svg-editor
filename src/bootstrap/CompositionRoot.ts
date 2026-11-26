@@ -33,6 +33,7 @@ import { CliPresenter } from "../interfaces/cli/CliPresenter.js";
 import { CliShapeDetailsRenderer } from "../interfaces/cli/CliShapeDetailsRenderer.js";
 import { CliTreeRenderer } from "../interfaces/cli/CliTreeRenderer.js";
 import { NodeFileStore } from "../infrastructure/fs/NodeFileStore.js";
+import { NodeDirectoryReader } from "../infrastructure/fs/NodeDirectoryReader.js";
 import { XmlSvgCodec } from "../infrastructure/svg/XmlSvgCodec.js";
 import { PluginHost } from "../host/PluginHost.js";
 import { PluginLoader } from "../host/PluginLoader.js";
@@ -57,13 +58,17 @@ export async function createCliApplication(
   const attributeHandlers = new AttributeHandlerRegistry();
   const treeDecorators = new TreeDecoratorRegistry();
   const files = new NodeFileStore();
+  const directories = new NodeDirectoryReader();
   const shapes = new ShapeFactory();
-  const pluginHost = new PluginHost({
-    shapes,
-    commands,
-    decorators: treeDecorators,
-    attributes: attributeHandlers
-  });
+  const pluginHost = new PluginHost(
+    {
+      shapes,
+      commands,
+      decorators: treeDecorators,
+      attributes: attributeHandlers
+    },
+    { directoryReader: directories }
+  );
   const builtinResult = pluginHost.activate(
     builtinShapesPlugin,
     builtinShapesManifest
