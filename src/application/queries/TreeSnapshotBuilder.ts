@@ -2,12 +2,39 @@ import type { Document } from "../../domain/model/Document.js";
 import { ContainerShape } from "../../domain/shapes/ContainerShape.js";
 import type { Shape } from "../../domain/shapes/Shape.js";
 import type {
+  TreeDecorationContext,
+  TreeDecorationResolver,
+  TreeDecorationTarget
+} from "../extensions/TreeDecorator.js";
+import { TreeDecoratorRegistry } from "../extensions/TreeDecoratorRegistry.js";
+import type {
   TreeSnapshot,
   TreeSnapshotNode
 } from "./TreeSnapshot.js";
 
 export class TreeSnapshotBuilder {
+  constructor(
+    private readonly decorators: TreeDecorationResolver =
+      new TreeDecoratorRegistry()
+  ) {}
+
   build(document: Document, rootId?: string): TreeSnapshot {
+    const context: TreeDecorationContext =
+      rootId === undefined ? { document } : { document, rootId };
+    const decorations =
+      rootId === undefined
+        ? this.decorators.decorate(
+            {
+              id: "svg",
+              typeName: "svg",
+              attributes: [],
+              isRoot: true,
+              parentId: null
+            },
+            context
+          )
+        : [];
+
     if (rootId !== undefined) {
       const root = document.findShape(rootId);
       if (root === undefined) {
@@ -16,7 +43,8 @@ export class TreeSnapshotBuilder {
       return {
         width: document.width,
         height: document.height,
-        root: this.createNode(root),
+        decorations,
+        root: this.createNode(root, context, null),
         roots: []
       };
     }
@@ -24,20 +52,37 @@ export class TreeSnapshotBuilder {
     return {
       width: document.width,
       height: document.height,
+      decorations,
       root: null,
-      roots: document.shapes.map((shape) => this.createNode(shape))
+      roots: document.shapes.map((shape) =>
+        this.createNode(shape, context, null)
+      )
     };
   }
 
-  private createNode(shape: Shape): TreeSnapshotNode {
+  private createNode(
+    shape: Shape,
+    context: TreeDecorationContext,
+    parentId: string | null
+  ): TreeSnapshotNode {
     const descriptor = shape.toDescriptor();
+    const target: TreeDecorationTarget = {
+      id: descriptor.id,
+      typeName: descriptor.typeName,
+      attributes: descriptor.attributes,
+      isRoot: false,
+      parentId
+    };
     return {
       id: descriptor.id,
       typeName: descriptor.typeName,
       attributes: descriptor.attributes,
+      decorations: this.decorators.decorate(target, context),
       children:
         shape instanceof ContainerShape
-          ? shape.children.map((child) => this.createNode(child))
+          ? shape.children.map((child) =>
+              this.createNode(child, context, shape.id)
+            )
           : []
     };
   }

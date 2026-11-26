@@ -5,6 +5,11 @@ import type { ShapeProvider } from "../ShapeProvider.js";
 
 export class RectProvider implements ShapeProvider {
   readonly typeName = "rect";
+  readonly svgMatchPriority = 0;
+
+  matchesSvgElement(element: { readonly tagName: string }): boolean {
+    return element.tagName === this.typeName;
+  }
 
   createFromCliArgs(args: readonly string[]): ShapeInit {
     if (args.length < 5 || args.length > 6) {

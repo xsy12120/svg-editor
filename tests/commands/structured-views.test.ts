@@ -29,12 +29,14 @@ describe("structured display queries", () => {
       snapshot: {
         width: 400,
         height: 200,
+        decorations: [],
         root: null,
         roots: [
           {
             id: "g1",
             typeName: "g",
             attributes: [],
+            decorations: [],
             children: [
               {
                 id: "r1",
@@ -45,6 +47,7 @@ describe("structured display queries", () => {
                   { name: "w", value: "30" },
                   { name: "h", value: "40" }
                 ],
+                decorations: [],
                 children: []
               }
             ]

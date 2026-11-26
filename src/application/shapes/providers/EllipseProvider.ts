@@ -12,6 +12,11 @@ import {
 
 export class EllipseProvider implements ShapeProvider {
   readonly typeName = "ellipse";
+  readonly svgMatchPriority = 0;
+
+  matchesSvgElement(element: { readonly tagName: string }): boolean {
+    return element.tagName === this.typeName;
+  }
 
   createFromCliArgs(args: readonly string[]): ShapeInit {
     if (args.length < 5 || args.length > 6) {

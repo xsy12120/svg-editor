@@ -12,7 +12,12 @@ export class CliTreeRenderer implements TreeSnapshotRenderer {
       return lines.join("\n");
     }
 
-    const lines = [`svg (${snapshot.width}x${snapshot.height})`];
+    const lines = [
+      appendDecorations(
+        `svg (${snapshot.width}x${snapshot.height})`,
+        snapshot.decorations
+      )
+    ];
     snapshot.roots.forEach((node, index) => {
       const connector = index === snapshot.roots.length - 1 ? "└── " : "├── ";
       lines.push(`${connector}${this.formatNode(node)}`);
@@ -62,13 +67,25 @@ export class CliTreeRenderer implements TreeSnapshotRenderer {
         .map((attribute) => `${attribute.name}=${attribute.value}`)
         .join(" ");
       const suffix = style.length === 0 ? "" : ` ${style}`;
-      return `${node.typeName}#${node.id} (${x.value},${y.value}) "${text.value}"${suffix}`;
+      return appendDecorations(
+        `${node.typeName}#${node.id} (${x.value},${y.value}) "${text.value}"${suffix}`,
+        node.decorations
+      );
     }
 
     const attributes = node.attributes
       .map((attribute) => `${attribute.name}=${attribute.value}`)
       .join(" ");
     const suffix = attributes.length === 0 ? "" : ` ${attributes}`;
-    return `${node.typeName}#${node.id}${suffix}`;
+    return appendDecorations(
+      `${node.typeName}#${node.id}${suffix}`,
+      node.decorations
+    );
   }
+}
+
+function appendDecorations(base: string, decorations: readonly string[]): string {
+  return decorations.length === 0
+    ? base
+    : `${base} ${decorations.join(" ")}`;
 }

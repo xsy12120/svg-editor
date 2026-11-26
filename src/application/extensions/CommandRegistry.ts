@@ -1,13 +1,14 @@
 import type { ExecutableCommand } from "../commands/ExecutableCommand.js";
 import { CommandRejectedError } from "../../shared/errors/CommandRejectedError.js";
+import type {
+  CommandHelpEntry,
+  CommandLookup
+} from "./CommandLookup.js";
 import type { CommandProvider } from "./CommandProvider.js";
 
-export interface CommandHelpEntry {
-  readonly name: string;
-  readonly usage: string;
-}
-
-export class CommandRegistry<TContext> {
+export class CommandRegistry<TContext>
+  implements CommandLookup<TContext>
+{
   private readonly providers = new Map<string, CommandProvider<TContext>>();
 
   register(provider: CommandProvider<TContext>): void {

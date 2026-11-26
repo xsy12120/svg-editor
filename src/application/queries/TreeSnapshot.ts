@@ -4,12 +4,14 @@ export interface TreeSnapshotNode {
   readonly id: string;
   readonly typeName: string;
   readonly attributes: readonly ShapeAttribute[];
+  readonly decorations: readonly string[];
   readonly children: readonly TreeSnapshotNode[];
 }
 
 interface TreeSnapshotBase {
   readonly width: number;
   readonly height: number;
+  readonly decorations: readonly string[];
 }
 
 export interface FullTreeSnapshot extends TreeSnapshotBase {

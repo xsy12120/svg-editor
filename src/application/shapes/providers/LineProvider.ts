@@ -11,6 +11,11 @@ import {
 
 export class LineProvider implements ShapeProvider {
   readonly typeName = "line";
+  readonly svgMatchPriority = 0;
+
+  matchesSvgElement(element: { readonly tagName: string }): boolean {
+    return element.tagName === this.typeName;
+  }
 
   createFromCliArgs(args: readonly string[]): ShapeInit {
     if (args.length < 5 || args.length > 6) {

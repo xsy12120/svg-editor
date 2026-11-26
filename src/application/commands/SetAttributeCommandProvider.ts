@@ -1,5 +1,7 @@
 import type { EditorSession } from "../EditorSession.js";
 import type { CommandProvider } from "../extensions/CommandProvider.js";
+import type { AttributeHandlerResolver } from "../extensions/AttributeHandler.js";
+import { AttributeHandlerRegistry } from "../extensions/AttributeHandlerRegistry.js";
 import { SetAttributeCommand } from "./SetAttributeCommand.js";
 import type { UndoableCommand } from "./UndoableCommand.js";
 
@@ -8,6 +10,11 @@ export class SetAttributeCommandProvider
 {
   readonly name = "set";
   readonly usage = "set <id> <attribute> <value>";
+
+  constructor(
+    private readonly handlers: AttributeHandlerResolver =
+      new AttributeHandlerRegistry()
+  ) {}
 
   create(args: readonly string[]): UndoableCommand<EditorSession> {
     if (args.length !== 3) {
@@ -19,6 +26,6 @@ export class SetAttributeCommandProvider
       throw new Error("set id, attribute and value are required");
     }
 
-    return new SetAttributeCommand(id, name, value);
+    return new SetAttributeCommand(id, name, value, this.handlers);
   }
 }

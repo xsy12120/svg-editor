@@ -1,5 +1,5 @@
 import type { EditorSession } from "../EditorSession.js";
-import type { ShapeFactory } from "../shapes/ShapeFactory.js";
+import type { ShapeCatalog } from "../shapes/ShapeCatalog.js";
 import { ContainerShape } from "../../domain/shapes/ContainerShape.js";
 import { CreateShapeEdit } from "./CreateShapeEdit.js";
 import type { PreparedEdit } from "./PreparedEdit.js";
@@ -9,7 +9,7 @@ export class CreateShapeCommand implements UndoableCommand<EditorSession> {
   readonly kind = "edit";
 
   constructor(
-    private readonly shapeFactory: ShapeFactory,
+    private readonly shapes: ShapeCatalog,
     private readonly typeName: string,
     private readonly args: readonly string[]
   ) {}
@@ -21,7 +21,7 @@ export class CreateShapeCommand implements UndoableCommand<EditorSession> {
     }
 
     const parsed = this.parseContainerClause();
-    const shape = this.shapeFactory.createFromCliArgs(
+    const shape = this.shapes.createFromCliArgs(
       this.typeName,
       parsed.shapeArgs
     );

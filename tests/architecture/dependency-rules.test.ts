@@ -68,4 +68,24 @@ describe("architecture dependency rules", () => {
       )
     ).toEqual([]);
   });
+
+  it("keeps command code behind factory and registry interfaces", async () => {
+    const commandImports = await collectImports(
+      join(projectRoot, "src", "application", "commands")
+    );
+    const cliImports = await collectImports(
+      join(projectRoot, "src", "interfaces", "cli")
+    );
+
+    expect(
+      commandImports.filter((entry) =>
+        entry.includes("/application/shapes/ShapeFactory.js")
+      )
+    ).toEqual([]);
+    expect(
+      cliImports.filter((entry) =>
+        entry.includes("/application/extensions/CommandRegistry.js")
+      )
+    ).toEqual([]);
+  });
 });

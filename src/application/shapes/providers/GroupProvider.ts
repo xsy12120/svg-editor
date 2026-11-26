@@ -6,6 +6,11 @@ import { assertShapeType, requireShapeId } from "./ShapeProviderSupport.js";
 
 export class GroupProvider implements ShapeProvider {
   readonly typeName = "g";
+  readonly svgMatchPriority = 0;
+
+  matchesSvgElement(element: { readonly tagName: string }): boolean {
+    return element.tagName === "g";
+  }
 
   createFromCliArgs(args: readonly string[]): ShapeInit {
     if (args.length !== 1) {

@@ -12,6 +12,11 @@ import {
 
 export class CircleProvider implements ShapeProvider {
   readonly typeName = "circle";
+  readonly svgMatchPriority = 0;
+
+  matchesSvgElement(element: { readonly tagName: string }): boolean {
+    return element.tagName === this.typeName;
+  }
 
   createFromCliArgs(args: readonly string[]): ShapeInit {
     if (args.length < 4 || args.length > 5) {

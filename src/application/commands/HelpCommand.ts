@@ -1,12 +1,12 @@
 import type { EditorSession } from "../EditorSession.js";
-import type { CommandRegistry } from "../extensions/CommandRegistry.js";
+import type { CommandLookup } from "../extensions/CommandLookup.js";
 import type { CommandResult } from "./CommandResult.js";
 import type { QueryCommand } from "./ExecutableCommand.js";
 
 export class HelpCommand implements QueryCommand<EditorSession> {
   readonly kind = "query";
 
-  constructor(private readonly commands: CommandRegistry<EditorSession>) {}
+  constructor(private readonly commands: CommandLookup<EditorSession>) {}
 
   validate(): void {}
 

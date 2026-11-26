@@ -21,6 +21,8 @@ import { TreeCommandProvider } from "../application/commands/TreeCommandProvider
 import { UngroupCommandProvider } from "../application/commands/UngroupCommandProvider.js";
 import { UndoCommandProvider } from "../application/commands/UndoCommandProvider.js";
 import { CommandRegistry } from "../application/extensions/CommandRegistry.js";
+import { AttributeHandlerRegistry } from "../application/extensions/AttributeHandlerRegistry.js";
+import { TreeDecoratorRegistry } from "../application/extensions/TreeDecoratorRegistry.js";
 import { CommandInvoker } from "../application/history/CommandInvoker.js";
 import { CommandProcessor } from "../application/history/CommandProcessor.js";
 import { ShapeDetailsSnapshotBuilder } from "../application/queries/ShapeDetailsSnapshotBuilder.js";
@@ -47,6 +49,8 @@ export function createCliApplication(
   const invoker = new CommandInvoker(session);
   const processor = new CommandProcessor(invoker);
   const commands = new CommandRegistry<EditorSession>();
+  const attributeHandlers = new AttributeHandlerRegistry();
+  const treeDecorators = new TreeDecoratorRegistry();
   const files = new NodeFileStore();
   const shapes = new ShapeFactory();
   shapes.register(new CircleProvider());
@@ -64,14 +68,16 @@ export function createCliApplication(
   commands.register(new CreateCommandProvider(shapes));
   commands.register(new MoveCommandProvider());
   commands.register(new ScaleCommandProvider());
-  commands.register(new SetAttributeCommandProvider());
+  commands.register(new SetAttributeCommandProvider(attributeHandlers));
   commands.register(new DeleteCommandProvider());
   commands.register(new GroupCommandProvider());
   commands.register(new UngroupCommandProvider());
   commands.register(new AddToCommandProvider());
   commands.register(new FrontCommandProvider());
   commands.register(new BackCommandProvider());
-  commands.register(new TreeCommandProvider(new TreeSnapshotBuilder()));
+  commands.register(
+    new TreeCommandProvider(new TreeSnapshotBuilder(treeDecorators))
+  );
   commands.register(
     new ShowCommandProvider(new ShapeDetailsSnapshotBuilder())
   );

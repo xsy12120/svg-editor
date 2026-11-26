@@ -1,7 +1,7 @@
 import { createInterface } from "node:readline";
 import type { Readable, Writable } from "node:stream";
 
-import type { CommandRegistry } from "../../application/extensions/CommandRegistry.js";
+import type { CommandLookup } from "../../application/extensions/CommandLookup.js";
 import type { EditorSession } from "../../application/EditorSession.js";
 import type { CommandProcessor } from "../../application/history/CommandProcessor.js";
 import { CommandParser } from "./CommandParser.js";
@@ -15,7 +15,7 @@ export class CliApplication {
   constructor(
     private readonly input: Readable,
     private readonly output: Writable,
-    private readonly commands: CommandRegistry<EditorSession>,
+    private readonly commands: CommandLookup<EditorSession>,
     private readonly processor: CommandProcessor<EditorSession>,
     private readonly presenter: CliPresenter,
     private readonly parser = new CommandParser()
