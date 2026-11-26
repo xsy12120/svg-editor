@@ -88,4 +88,14 @@ describe("architecture dependency rules", () => {
       )
     ).toEqual([]);
   });
+
+  it("does not expose the concrete writable session through plugin commands", async () => {
+    const source = await readFile(
+      join(projectRoot, "src", "plugin-api", "Plugin.ts"),
+      "utf8"
+    );
+
+    expect(source).not.toContain("EditorSession");
+    expect(source).toContain("EditorCommandContext");
+  });
 });

@@ -1,4 +1,5 @@
 import type { EditorSession } from "../application/EditorSession.js";
+import type { EditorCommandContext } from "../application/context/EditorCommandContext.js";
 import type { AttributeHandler } from "../application/extensions/AttributeHandler.js";
 import type { CommandProvider } from "../application/extensions/CommandProvider.js";
 import type { TreeDecorator } from "../application/extensions/TreeDecorator.js";
@@ -115,7 +116,7 @@ export class PluginHost {
 
 class StagedPluginContext implements PluginRegistrationContext {
   readonly shapes: ShapeProvider[] = [];
-  readonly commands: CommandProvider<EditorSession>[] = [];
+  readonly commands: CommandProvider<EditorCommandContext>[] = [];
   readonly decorators: TreeDecorator[] = [];
   readonly attributes: AttributeHandler[] = [];
 
@@ -123,7 +124,7 @@ class StagedPluginContext implements PluginRegistrationContext {
     this.add("shapes", provider.typeName, this.shapes, provider);
   }
 
-  registerCommand(provider: CommandProvider<EditorSession>): void {
+  registerCommand(provider: CommandProvider<EditorCommandContext>): void {
     this.add("commands", provider.name, this.commands, provider);
   }
 

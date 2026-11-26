@@ -1,4 +1,4 @@
-import type { EditorSession } from "../application/EditorSession.js";
+import type { EditorCommandContext } from "../application/context/EditorCommandContext.js";
 import type { AttributeHandler } from "../application/extensions/AttributeHandler.js";
 import type { CommandProvider } from "../application/extensions/CommandProvider.js";
 import type { TreeDecorator } from "../application/extensions/TreeDecorator.js";
@@ -20,7 +20,7 @@ export interface PluginManifest {
 
 export interface PluginRegistrationContext {
   registerShape(provider: ShapeProvider): void;
-  registerCommand(provider: CommandProvider<EditorSession>): void;
+  registerCommand(provider: CommandProvider<EditorCommandContext>): void;
   registerTreeDecorator(decorator: TreeDecorator): void;
   registerAttributeHandler(handler: AttributeHandler): void;
 }

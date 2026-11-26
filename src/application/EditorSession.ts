@@ -1,6 +1,7 @@
 import { Document } from "../domain/model/Document.js";
+import type { EditorCommandContext } from "./context/EditorCommandContext.js";
 
-export class EditorSession {
+export class EditorSession implements EditorCommandContext {
   private activeDocument: Document | null = null;
   private activeDocumentPath: string | null = null;
 
