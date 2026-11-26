@@ -1,0 +1,12 @@
+svg-editor 0.1 — type 'help' for commands
+
+svg> svg> canvas 320x200 created
+svg> rect#a created
+svg> circle#b created
+svg> rect: 1  circle: 1  (total 2, containers 0)
+svg> [DIR]  subdir
+[FILE]  alpha.svg
+[FILE]  notes.txt
+svg> circle#b deleted
+svg> rect: 1  (total 1, containers 0)
+svg> 

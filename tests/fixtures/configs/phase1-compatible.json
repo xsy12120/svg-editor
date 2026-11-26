@@ -1,0 +1,24 @@
+{
+  "plugins": [
+    {
+      "module": "../../../src/plugins/command-stats",
+      "enabled": false
+    },
+    {
+      "module": "../../../src/plugins/command-dir",
+      "enabled": false
+    },
+    {
+      "module": "../../../src/plugins/shape-box",
+      "enabled": false
+    },
+    {
+      "module": "../../../src/plugins/tree-box-label",
+      "enabled": false
+    },
+    {
+      "module": "../../../src/plugins/tree-star",
+      "enabled": false
+    }
+  ]
+}

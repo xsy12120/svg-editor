@@ -1,0 +1,10 @@
+# Box lifecycle used by both assembly methods.
+init 800 600
+create box n1 120 100 160 60 "开始"
+tree
+set n1 fill #f5a623
+set n1 label 处理数据
+tree n1
+move n1 20 10
+undo
+tree

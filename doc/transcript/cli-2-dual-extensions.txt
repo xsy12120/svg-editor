@@ -1,0 +1,8 @@
+# Stats and directory command session used by both assembly methods.
+init 320 200
+create rect a 0 0 40 20
+create circle b 80 40 10
+stats
+dir
+undo
+stats

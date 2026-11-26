@@ -1,0 +1,20 @@
+svg-editor 0.1 — type 'help' for commands
+
+svg> svg> canvas 800x600 created
+svg> box#n1 created (g#n1 + rect#n1-rect + text#n1-label)
+svg> svg (800x600) *
+└── g#n1 (box) *
+    ├── rect#n1-rect x=120 y=100 w=160 h=60 fill=#4a90d9 *
+    └── text#n1-label (140,135) "开始" *
+svg> box#n1 fill propagated to n1-rect
+svg> box#n1 label updated: "处理数据"
+svg> g#n1 (box) *
+├── rect#n1-rect x=120 y=100 w=160 h=60 fill=#f5a623 *
+└── text#n1-label (140,135) "处理数据" *
+svg> box#n1 moved by (20,10)
+svg> box#n1 moved back by (-20,-10)
+svg> svg (800x600) *
+└── g#n1 (box) *
+    ├── rect#n1-rect x=120 y=100 w=160 h=60 fill=#f5a623 *
+    └── text#n1-label (140,135) "处理数据" *
+svg> 

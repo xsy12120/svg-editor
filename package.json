@@ -23,6 +23,7 @@
     "build:plugins": "npm run build --workspaces --if-present",
     "cli": "npm run build && node dist/main.js",
     "typecheck": "tsc --noEmit",
+    "verify:assembly": "npm run build && node scripts/verify-assembly.mjs",
     "pretest": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest"

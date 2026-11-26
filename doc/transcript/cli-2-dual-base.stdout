@@ -1,0 +1,22 @@
+svg-editor 0.1 — type 'help' for commands
+
+svg> svg> canvas 800x600 created
+svg> rect#bg created
+svg> text#title created
+svg> g#node created
+svg> rect#child created in g#node
+svg> svg (800x600) *
+├── rect#bg x=0 y=0 w=800 h=600 fill=#ffffff *
+├── text#title (20,40) "My Diagram" *
+└── g#node *
+    └── rect#child x=50 y=60 w=80 h=40 fill=#aabbcc *
+svg> rect#child deleted
+svg> rect#child created in g#node
+svg> g#node *
+└── rect#child x=50 y=60 w=80 h=40 fill=#aabbcc *
+svg> svg (800x600) *
+├── rect#bg x=0 y=0 w=800 h=600 fill=#ffffff *
+├── text#title (20,40) "My Diagram" *
+└── g#node *
+    └── rect#child x=50 y=60 w=80 h=40 fill=#aabbcc *
+svg> 

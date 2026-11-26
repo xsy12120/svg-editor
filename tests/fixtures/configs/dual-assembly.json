@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    { "module": "../../../src/plugins/command-stats" },
+    { "module": "../../../src/plugins/command-dir" },
+    { "module": "../../../src/plugins/shape-box" },
+    { "module": "../../../src/plugins/tree-box-label" },
+    { "module": "../../../src/plugins/tree-star" }
+  ]
+}

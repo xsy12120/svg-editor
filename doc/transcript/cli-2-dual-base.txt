@@ -1,0 +1,11 @@
+# Phase 1 base editing session shared by both assembly methods.
+init 800 600
+create rect bg 0 0 800 600 #ffffff
+create text title 20 40 "My Diagram"
+create g node
+create rect child 50 60 80 40 #aabbcc in node
+tree
+undo
+redo
+tree node
+tree
