@@ -337,3 +337,249 @@ npm run build
 - translate、等比 scale、Text font-size/text-anchor round-trip。
 - 缺 id 自动补全、quoted text 和含空格参数。
 - 用户错误与内部异常分类。
+
+# Phase 2 第一部分：VSCode 插件实践
+
+## 1. 功能与验收证据
+
+扩展源码位于 `vscode-extension/`，提供两个功能：
+
+1. 在 Explorer 中为普通 `.svg` 文件显示 `[]` 标记。
+2. 在 VSCode 原生 Outline 中显示 SVG 元素的嵌套结构，并支持点击定位源码。
+
+扩展不会修改文件名或文件内容。示例文件位于：
+
+- `vscode-extension/examples/example.svg`
+- `vscode-extension/examples/uppercase.SVG`
+- `vscode-extension/examples/notes.txt`
+- `vscode-extension/examples/folder.svg/`
+
+### 1.1 文件标记截图
+
+![alt text](<屏幕截图 2026-11-24 203653.png>)
+
+预期结果：
+
+- `example.svg` 和 `uppercase.SVG` 右侧显示 `[]`。
+- `notes.txt` 不显示标记。
+- `folder.svg` 是目录，不显示标记。
+- 文件名和文件内容保持不变。
+
+### 1.2 SVG 大纲与源码定位截图
+
+![alt text](image.png)
+
+预期结果：
+
+- Outline 展示根元素、容器和叶子元素。
+- 有 id 的元素显示为 `标签名#id`。
+- 没有 id 的元素只显示标签名。
+- 点击 `rect#start` 后定位到对应源码。
+- 编辑合法 SVG 后，Outline 更新。
+
+### 1.3 异常 XML 截图
+
+![alt text](image-1.png)
+
+不完整 XML 的允许行为是暂时清空 Outline。修复 XML 后，Outline 恢复。
+
+### 1.4 自动化验证
+
+`vscode-extension/test/` 中的 Vitest 测试覆盖：
+
+- SVG 文件识别和装饰资格。
+- 非 SVG 文件、目录和非文件 scheme 不产生装饰。
+- 合法 SVG 的层级、顺序、id、自闭合标签和源码范围。
+- 不完整 XML 返回空结果。
+- 编辑后新增、修改、删除节点。
+- Outline 节点到 `DocumentSymbol` 的递归映射。
+- Provider 的激活和销毁生命周期。
+
+`vscode-extension/integration-test/` 使用 `@vscode/test-electron` 启动真实 Extension Host，验证：
+
+- 扩展能在真实 VSCode 中激活。
+- VSCode 确实调用了注册的 SVG `DocumentSymbolProvider`。
+- 大纲层级和源码范围正确。
+- 编辑文档后 Symbol 树刷新。
+- 不完整 XML 返回空大纲。
+- 修复 XML 后大纲恢复。
+
+运行命令：
+
+```powershell
+cd vscode-extension
+npm test
+npm run test:integration
+```
+
+## 2. 分析
+
+### 2.1 VSCode 与扩展的职责
+
+VSCode 是扩展宿主、文档模型和界面渲染者。扩展只提供附加信息以及从文档生成 Symbol 的能力。
+
+| 职责 | VSCode | SVG 扩展 |
+|---|---|---|
+| 启动与生命周期 | 调用 `activate(context)`，保存扩展上下文 | 创建并注册 provider |
+| 文件模型 | 管理 `Uri`、`TextDocument` 和文件系统 | 判断 URI 是否为 SVG，查询文件类型 |
+| Explorer | 决定 Explorer 布局并绘制文件装饰 | 为合格 SVG 返回 `FileDecoration` 元数据 |
+| Outline | 决定 Outline 的展示、选择、定位和刷新 | 返回嵌套的 `DocumentSymbol[]` |
+| 编辑事件 | 在文档变化后重新请求 Symbol Provider | 每次调用读取最新 `document.getText()` |
+| 销毁 | 释放 `context.subscriptions` | Provider 本身不持有需要手动清理的外部资源 |
+
+扩展不能直接改变 Explorer 的绘制方式，也不能强制 Outline 刷新。扩展只实现 VSCode 公开的 Provider 接口，由 VSCode 根据当前工作区、文件类型和文档状态决定何时调用这些接口。
+
+### 2.2 注册、回调和调用关系
+
+当前实现在 `vscode-extension/src/extension.ts` 中完成组合根职责：
+
+1. `activate(context)` 创建 `VscodeSvgEntryInspector`。
+2. 创建 `SvgFileDecorationProvider`，并注入文件类型查询能力。
+3. 创建 `SvgOutlineDocumentSymbolProvider`。
+4. 调用 `window.registerFileDecorationProvider` 注册文件装饰。
+5. 调用 `languages.registerDocumentSymbolProvider`，以 `{ scheme: "file", pattern: "**/*.svg" }` 注册大纲。
+6. 把两个注册返回的 `Disposable` 放入 `context.subscriptions`。
+
+Provider 每次激活都重新创建，不使用模块级共享实例。这样避免了多次激活之间的状态泄漏，也把资源生命周期绑定到当前 `ExtensionContext`。
+
+文件装饰的调用关系如下：
+
+```text
+VSCode Explorer
+  -> FileDecorationProvider.provideFileDecoration(uri)
+  -> isSvgUri(uri)
+  -> VscodeSvgEntryInspector.inspect(uri)
+  -> workspace.fs.stat(uri)
+  -> FileType -> SvgEntryKind
+  -> { badge: "[]" } 或 undefined
+  -> VSCode 绘制 Explorer 标记
+```
+
+非 SVG URI 在调用 `workspace.fs.stat` 前直接返回 `undefined`。SVG URI 只有在文件类型为普通文件时才返回 `{ badge: "[]" }`，所以目录不会获得标记。
+
+Outline 的调用关系如下：
+
+```text
+VSCode 打开 .svg 文本文件
+  -> DocumentSymbolProvider.provideDocumentSymbols(document)
+  -> document.getText()
+  -> SvgOutlineParser.parse(...)
+  -> SvgOutlineSymbolMapper.map(document, root)
+  -> DocumentSymbol[]
+  -> VSCode 渲染原生 Outline
+```
+
+解析器返回轻量 `SvgOutlineNode`，不依赖 Phase 1 的 `Document`、`Shape` 或 `ShapeFactory`。`SvgOutlineSymbolMapper` 再把轻量节点转换为 VSCode 的 `DocumentSymbol` 和 `Range`。
+
+如果 XML 暂时不完整，解析器返回 `null`，Provider 返回空数组。如果解析过程中出现意外异常，Provider 会捕获异常并返回空大纲，避免扩展宿主崩溃。
+
+### 2.3 接口与对象组合
+
+扩展使用三个内部边界：
+
+```typescript
+type InspectSvgEntry = (uri: Uri) => Promise<SvgEntryKind>;
+
+type SvgOutlineParser = (
+  source: string
+) => SvgOutlineNode | null;
+
+interface SvgOutlineSymbolMapping {
+  map(document: TextDocument, root: SvgOutlineNode): DocumentSymbol[];
+}
+```
+
+对象组合关系如下：
+
+```text
+activate
+├── VscodeSvgEntryInspector
+│   └── workspace.fs.stat
+├── SvgFileDecorationProvider
+│   └── InspectSvgEntry
+└── SvgOutlineDocumentSymbolProvider
+    ├── SvgOutlineParser
+    └── SvgOutlineSymbolMapping
+        └── DocumentSymbol
+```
+
+`SvgFileDecorationProvider` 和 `SvgOutlineDocumentSymbolProvider` 都通过构造函数获得可变依赖，因此可以在单元测试中注入测试替身。`extension.ts` 只负责实例化和注册，不实现文件系统判断、解析或 Symbol 映射逻辑。
+
+涉及的主要 VSCode 接口是：
+
+- `FileDecorationProvider`
+- `DocumentSymbolProvider`
+- `TextDocument`
+- `DocumentSymbol`
+- `Range`
+
+内部代码没有继承 VSCode UI 类，而是实现接口并组合依赖，避免扩展逻辑和界面实现形成继承耦合。
+
+### 2.4 文件装饰与经典 Decorator 的关系
+
+经典 GoF Decorator 的典型结构是：
+
+```text
+Client -> Decorator -> Concrete Component
+```
+
+Decorator 通常持有被装饰对象，在把调用委托给原对象前后增加行为。被装饰对象和 Decorator 实现共同的接口，客户端仍然操作同一个组件抽象。
+
+VSCode 的 `FileDecorationProvider` 与本项目中的 SVG 文件装饰有如下相似点：
+
+- 都向原有对象增加显示信息。
+- 都不修改原始文件内容。
+- 都通过组合方式扩展行为。
+- 都不需要修改 Explorer 或 VSCode 文件系统的内部实现。
+
+但两者有本质差异：
+
+| 比较项 | 经典 Decorator | VSCode 文件装饰 Provider |
+|---|---|---|
+| 是否包装目标对象 | 是，通常持有 Component 引用 | 否，只接收目标 `Uri` |
+| 是否委托原对象行为 | 是 | 否 |
+| 是否实现目标和装饰器的共同接口 | 是 | Provider 实现 VSCode 扩展接口 |
+| 状态和调用权 | 由装饰器和客户端控制 | 由 VSCode 决定何时调用 |
+| 输出 | 包装后的对象 | `FileDecoration` 展示元数据 |
+| 是否改变文件模型 | 可改变对象行为 | 不改变文件模型 |
+
+因此，本项目中的“文件装饰”不是严格的 GoF Decorator。它更接近 Decorator-style Provider/Strategy：VSCode 定义稳定的 Provider 接口，扩展在接口背后提供附加展示策略，最终绘制由 VSCode 完成。
+
+### 2.5 与 Adapter 模式的关系
+
+本项目包含两个明确的适配边界：
+
+1. `VscodeSvgEntryInspector` 把 VSCode 的 `workspace.fs.stat` 和数值型 `FileType` 适配为领域侧的 `SvgEntryKind`。
+2. `SvgOutlineDocumentSymbolProvider` 和 `SvgOutlineSymbolMapper` 把内部轻量 Outline 模型适配为 VSCode 的 `DocumentSymbol`、`Position` 和 `Range`。
+
+它们的角色对应关系是：
+
+| Adapter 角色 | 文件系统适配 | Outline 适配 |
+|---|---|---|
+| Target | `SvgEntryKind` 查询 | `DocumentSymbolProvider` |
+| Client | `SvgFileDecorationProvider` | VSCode Outline |
+| Adapter | `VscodeSvgEntryInspector` | Outline Provider/Mapper |
+| Adaptee | `workspace.fs.stat` | VSCode `DocumentSymbol` API |
+
+`FileDecorationProvider` 接口本身同时具有 Provider 和 Adapter 特征：扩展通过它接入 VSCode 的 Explorer 展示机制，但最终展示责任仍在 VSCode。
+
+### 2.6 Phase 1 复用可能性评估
+
+Phase 1 和 VSCode 扩展共享 TypeScript、SVG 文本输入和树形结构概念，但目标不同。
+Phase 1 解析器服务于完整编辑器和几何模型；扩展只需要源码范围、标签名和 id。
+
+| Phase 1 代码 | 是否直接复用 | 原因与替代方案 |
+|---|---|---|
+| `SvgDocumentParser` | 否 | 要求完整合法 SVG，依赖 `ShapeFactory`，并将元素转换为图形对象；不能保留 VSCode 所需源码 offset |
+| `SvgIdAllocator` | 否 | 它会为无 id 元素自动分配 id；Outline 需要区分“有无显式 id” |
+| `Document` | 否 | 负责挂载树、id 索引和结构不变量，超出 Outline 需要 |
+| `Shape` 和各具体图形 | 否 | 包含几何和 SVG 语义；Outline 节点只需要标签、id、children 和 range |
+| `ContainerShape.walkTree` | 思路可复用 | 使用相同的前序/递归遍历思想，但扩展使用独立只读轻量节点 |
+| `ShapeDescriptor` | 思路可借鉴 | `标签名 + id` 的展示思想相近，但扩展不依赖 Phase 1 领域模型 |
+| `fast-xml-parser` 配置 | 否 | 当前配置不提供 VSCode 所需的稳定源码范围，且完整 XML 解析不适合编辑中的半成品 |
+| 错误分类与测试思路 | 可借鉴 | 可借鉴“非法输入不破坏状态”的测试原则，但不直接复用 CLI 错误类 |
+
+当前扩展没有导入 Phase 1 的 `src/domain`、`ShapeFactory` 或 `Document`，因此 VSCode 部分可以独立构建和测试。扩展使用独立的 `svgOutlineParser.ts`，在遍历时记录开始标签、结束标签和标签名 offset，能够直接映射到 VSCode 的 `Range`。
+
+未来如果两个部分都需要更复杂的 XML 处理，可以把“带源码位置的纯 XML tokenizer”抽成共享模块，但不应直接共享 CLI 领域模型。这样既能复用语法扫描能力，又能保持 CLI 编辑语义与 VSCode 展示语义的边界。
+
