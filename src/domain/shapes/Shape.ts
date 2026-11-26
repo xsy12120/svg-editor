@@ -31,6 +31,14 @@ export abstract class Shape {
     return undefined;
   }
 
+  get semanticTypeName(): string {
+    return this.toDescriptor().typeName;
+  }
+
+  get creationDetails(): readonly string[] {
+    return [];
+  }
+
   abstract get svgTagName(): string;
   abstract toSvgAttributes(): readonly ShapeAttribute[];
   get svgTextContent(): string | undefined {

@@ -37,6 +37,7 @@ export class TreeSnapshotBuilder {
             {
               id: "svg",
               typeName: "svg",
+              semanticTypeName: "svg",
               attributes: [],
               isRoot: true,
               parentId: null
@@ -79,6 +80,7 @@ export class TreeSnapshotBuilder {
     const target: TreeDecorationTarget = {
       id: descriptor.id,
       typeName: descriptor.typeName,
+      semanticTypeName: shape.semanticTypeName,
       attributes: descriptor.attributes,
       isRoot: false,
       parentId

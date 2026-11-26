@@ -5,6 +5,7 @@ import type { DocumentChangeState } from "../context/DocumentChangeState.js";
 export interface TreeDecorationTarget {
   readonly id: string;
   readonly typeName: string;
+  readonly semanticTypeName: string;
   readonly attributes: readonly ShapeAttribute[];
   readonly isRoot: boolean;
   readonly parentId: string | null;

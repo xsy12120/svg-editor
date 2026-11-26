@@ -49,6 +49,7 @@ describe("TreeDecorator extension point", () => {
     const target: TreeDecorationTarget = {
       id: "g1",
       typeName: "g",
+      semanticTypeName: "g",
       attributes: [],
       isRoot: false,
       parentId: null
@@ -127,5 +128,27 @@ describe("TreeDecorator extension point", () => {
         "    └── rect#r1 x=10 y=20 w=30 h=40"
       ].join("\n")
     );
+  });
+
+  it("exposes the semantic type independently from the SVG tag", () => {
+    const document = createDocument();
+    const registry = new TreeDecoratorRegistry();
+    registry.register(
+      decorator("semantic-label", 0, (target) =>
+        target.semanticTypeName === "g" ? [] : ["semantic"]
+      )
+    );
+    const semanticGroup = new Group("semantic");
+    Object.defineProperty(semanticGroup, "semanticTypeName", {
+      value: "plugin-container"
+    });
+    document.addShape(semanticGroup);
+
+    const snapshot = new TreeSnapshotBuilder(registry).build(document);
+    const semanticNode = snapshot.roots.find(
+      (node) => node.id === "semantic"
+    );
+
+    expect(semanticNode?.decorations).toEqual(["semantic"]);
   });
 });

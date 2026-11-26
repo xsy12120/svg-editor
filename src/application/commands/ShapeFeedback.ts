@@ -3,14 +3,17 @@ import type { ZOrderDirection } from "./ZOrderEdit.js";
 
 export class ShapeFeedback {
   static reference(shape: Shape): string {
-    const descriptor = shape.toDescriptor();
-    return `${descriptor.typeName}#${descriptor.id}`;
+    return `${shape.semanticTypeName}#${shape.id}`;
   }
 
   static created(shape: Shape, parent: Shape | null = null): string {
     const location =
       parent === null ? "" : ` in ${ShapeFeedback.reference(parent)}`;
-    return `${ShapeFeedback.reference(shape)} created${location}`;
+    const details =
+      shape.creationDetails.length === 0
+        ? ""
+        : ` (${shape.creationDetails.join(" + ")})`;
+    return `${ShapeFeedback.reference(shape)} created${details}${location}`;
   }
 
   static deleted(shape: Shape): string {
