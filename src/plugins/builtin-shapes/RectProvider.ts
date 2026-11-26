@@ -1,7 +1,9 @@
-import { Rect } from "../../../domain/shapes/Rect.js";
-import type { Shape } from "../../../domain/shapes/Shape.js";
-import type { ShapeInit } from "../ShapeInit.js";
-import type { ShapeProvider } from "../ShapeProvider.js";
+import {
+  Rect,
+  type Shape,
+  type ShapeInit,
+  type ShapeProvider
+} from "../../plugin-api/index.js";
 
 export class RectProvider implements ShapeProvider {
   readonly typeName = "rect";

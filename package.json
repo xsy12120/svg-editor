@@ -4,6 +4,10 @@
   "private": true,
   "description": "A command-driven SVG editor for the Software Design PJ1 assignment",
   "type": "module",
+  "exports": {
+    ".": "./dist/main.js",
+    "./plugin-api": "./dist/plugin-api/index.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "cli": "tsc -p tsconfig.build.json && node dist/main.js",

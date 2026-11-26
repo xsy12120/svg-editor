@@ -78,6 +78,17 @@ describe("PluginLoader", () => {
     ]);
   });
 
+  it("loads a local plugin by package directory", async () => {
+    const { loader, commands } = createHarness();
+
+    const result = await loader.loadConfigFile(
+      join(fixtureDirectory, "configs", "package-directory.json")
+    );
+
+    expect(result.errors).toEqual([]);
+    expect(commands.has("fixture-good")).toBe(true);
+  });
+
   it("falls back to built-ins for invalid configuration", async () => {
     const { loader } = createHarness();
 

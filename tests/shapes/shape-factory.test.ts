@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { RectProvider } from "../../src/application/shapes/providers/RectProvider.js";
+import { RectProvider } from "../../src/plugins/builtin-shapes/index.js";
 import { ShapeFactory } from "../../src/application/shapes/ShapeFactory.js";
 
 describe("ShapeFactory", () => {

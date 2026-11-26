@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { CircleProvider } from "../../src/application/shapes/providers/CircleProvider.js";
-import { EllipseProvider } from "../../src/application/shapes/providers/EllipseProvider.js";
-import { GroupProvider } from "../../src/application/shapes/providers/GroupProvider.js";
-import { LineProvider } from "../../src/application/shapes/providers/LineProvider.js";
-import { TextProvider } from "../../src/application/shapes/providers/TextProvider.js";
+import {
+  CircleProvider,
+  EllipseProvider,
+  GroupProvider,
+  LineProvider,
+  TextProvider
+} from "../../src/plugins/builtin-shapes/index.js";
 import { ShapeFactory } from "../../src/application/shapes/ShapeFactory.js";
 
 function createShapeFactory(): ShapeFactory {

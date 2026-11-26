@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { ShapeFactory } from "../../src/application/shapes/ShapeFactory.js";
 import type { ShapeProvider } from "../../src/application/shapes/ShapeProvider.js";
-import { GroupProvider } from "../../src/application/shapes/providers/GroupProvider.js";
-import { RectProvider } from "../../src/application/shapes/providers/RectProvider.js";
+import {
+  GroupProvider,
+  RectProvider
+} from "../../src/plugins/builtin-shapes/index.js";
 import { Group } from "../../src/domain/shapes/Group.js";
 
 function specialProvider(priority: number): ShapeProvider {

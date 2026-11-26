@@ -27,12 +27,6 @@ import { CommandInvoker } from "../application/history/CommandInvoker.js";
 import { CommandProcessor } from "../application/history/CommandProcessor.js";
 import { ShapeDetailsSnapshotBuilder } from "../application/queries/ShapeDetailsSnapshotBuilder.js";
 import { TreeSnapshotBuilder } from "../application/queries/TreeSnapshotBuilder.js";
-import { CircleProvider } from "../application/shapes/providers/CircleProvider.js";
-import { EllipseProvider } from "../application/shapes/providers/EllipseProvider.js";
-import { GroupProvider } from "../application/shapes/providers/GroupProvider.js";
-import { LineProvider } from "../application/shapes/providers/LineProvider.js";
-import { RectProvider } from "../application/shapes/providers/RectProvider.js";
-import { TextProvider } from "../application/shapes/providers/TextProvider.js";
 import { ShapeFactory } from "../application/shapes/ShapeFactory.js";
 import { CliApplication } from "../interfaces/cli/CliApplication.js";
 import { CliPresenter } from "../interfaces/cli/CliPresenter.js";
@@ -42,6 +36,10 @@ import { NodeFileStore } from "../infrastructure/fs/NodeFileStore.js";
 import { XmlSvgCodec } from "../infrastructure/svg/XmlSvgCodec.js";
 import { PluginHost } from "../host/PluginHost.js";
 import { PluginLoader } from "../host/PluginLoader.js";
+import {
+  builtinShapesManifest,
+  builtinShapesPlugin
+} from "../plugins/builtin-shapes/index.js";
 
 export interface CreateCliApplicationOptions {
   readonly configPath?: string;
@@ -60,12 +58,19 @@ export async function createCliApplication(
   const treeDecorators = new TreeDecoratorRegistry();
   const files = new NodeFileStore();
   const shapes = new ShapeFactory();
-  shapes.register(new CircleProvider());
-  shapes.register(new EllipseProvider());
-  shapes.register(new LineProvider());
-  shapes.register(new RectProvider());
-  shapes.register(new TextProvider());
-  shapes.register(new GroupProvider());
+  const pluginHost = new PluginHost({
+    shapes,
+    commands,
+    decorators: treeDecorators,
+    attributes: attributeHandlers
+  });
+  const builtinResult = pluginHost.activate(
+    builtinShapesPlugin,
+    builtinShapesManifest
+  );
+  if (!builtinResult.success) {
+    throw new Error(builtinResult.error);
+  }
   const svgCodec = new XmlSvgCodec(shapes);
 
   commands.register(new InitCommandProvider());
@@ -93,14 +98,7 @@ export async function createCliApplication(
   commands.register(new HelpCommandProvider(commands));
 
   if (options.configPath !== undefined) {
-    const loader = new PluginLoader(
-      new PluginHost({
-        shapes,
-        commands,
-        decorators: treeDecorators,
-        attributes: attributeHandlers
-      })
-    );
+    const loader = new PluginLoader(pluginHost);
     const result = await loader.loadConfigFile(options.configPath);
     for (const error of result.errors) {
       output.write(`${error}\n`);

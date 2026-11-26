@@ -41,8 +41,14 @@ export type {
   SvgShapeReader
 } from "../application/ports/SvgShapeReader.js";
 export type { Document } from "../domain/model/Document.js";
+export { Circle } from "../domain/shapes/Circle.js";
 export { ContainerShape } from "../domain/shapes/ContainerShape.js";
+export { Ellipse } from "../domain/shapes/Ellipse.js";
+export { Group } from "../domain/shapes/Group.js";
+export { Line } from "../domain/shapes/Line.js";
+export { Rect } from "../domain/shapes/Rect.js";
 export { Shape } from "../domain/shapes/Shape.js";
+export { Text } from "../domain/shapes/Text.js";
 export type {
   ShapeAttribute,
   ShapeDescriptor

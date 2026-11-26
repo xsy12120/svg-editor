@@ -3,8 +3,10 @@ import { describe, expect, it } from "vitest";
 import { EditorSession } from "../../src/application/EditorSession.js";
 import { CreateShapeCommand } from "../../src/application/commands/CreateShapeCommand.js";
 import { CommandInvoker } from "../../src/application/history/CommandInvoker.js";
-import { GroupProvider } from "../../src/application/shapes/providers/GroupProvider.js";
-import { RectProvider } from "../../src/application/shapes/providers/RectProvider.js";
+import {
+  GroupProvider,
+  RectProvider
+} from "../../src/plugins/builtin-shapes/index.js";
 import { ShapeFactory } from "../../src/application/shapes/ShapeFactory.js";
 import { Group } from "../../src/domain/shapes/Group.js";
 import { Rect } from "../../src/domain/shapes/Rect.js";

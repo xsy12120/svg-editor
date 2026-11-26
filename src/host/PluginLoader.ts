@@ -1,4 +1,4 @@
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, stat } from "node:fs/promises";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -122,7 +122,9 @@ export class PluginLoader {
       const moduleUrl =
         moduleSpecifier.startsWith(".") || isAbsolute(moduleSpecifier)
           ? pathToFileURL(
-              resolve(dirname(configPath), moduleSpecifier)
+              await this.resolveLocalEntry(
+                resolve(dirname(configPath), moduleSpecifier)
+              )
             ).href
           : import.meta.resolve(
               moduleSpecifier,
@@ -133,6 +135,26 @@ export class PluginLoader {
     } catch {
       return null;
     }
+  }
+
+  private async resolveLocalEntry(pathname: string): Promise<string> {
+    const entry = await stat(pathname);
+    if (!entry.isDirectory()) {
+      return pathname;
+    }
+
+    const packagePath = join(pathname, "package.json");
+    const packageJson = JSON.parse(
+      await readFile(packagePath, "utf8")
+    ) as unknown;
+    if (!isRecord(packageJson)) {
+      throw new Error("invalid plugin package");
+    }
+    const main = packageJson["main"];
+    return resolve(
+      pathname,
+      typeof main === "string" ? main : "./index.js"
+    );
   }
 
   private async readManifest(

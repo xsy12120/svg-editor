@@ -7,7 +7,7 @@ import { MoveShapeCommand } from "../../src/application/commands/MoveShapeComman
 import { ScaleShapeCommand } from "../../src/application/commands/ScaleShapeCommand.js";
 import { SetAttributeCommand } from "../../src/application/commands/SetAttributeCommand.js";
 import { CommandInvoker } from "../../src/application/history/CommandInvoker.js";
-import { RectProvider } from "../../src/application/shapes/providers/RectProvider.js";
+import { RectProvider } from "../../src/plugins/builtin-shapes/index.js";
 import { ShapeFactory } from "../../src/application/shapes/ShapeFactory.js";
 import { Group } from "../../src/domain/shapes/Group.js";
 import { Rect } from "../../src/domain/shapes/Rect.js";

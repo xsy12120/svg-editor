@@ -1,7 +1,9 @@
-import { Ellipse } from "../../../domain/shapes/Ellipse.js";
-import type { Shape } from "../../../domain/shapes/Shape.js";
-import type { ShapeInit } from "../ShapeInit.js";
-import type { ShapeProvider } from "../ShapeProvider.js";
+import {
+  Ellipse,
+  type Shape,
+  type ShapeInit,
+  type ShapeProvider
+} from "../../plugin-api/index.js";
 import {
   assertShapeType,
   parseFiniteNumber,

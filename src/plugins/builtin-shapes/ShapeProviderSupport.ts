@@ -1,4 +1,4 @@
-import type { ShapeInit } from "../ShapeInit.js";
+import type { ShapeInit } from "../../plugin-api/index.js";
 
 export function requireShapeId(
   value: string | undefined,
