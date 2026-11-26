@@ -1,0 +1,7 @@
+{
+  "plugins": [
+    { "module": "../../../src/plugins/shape-box" },
+    { "module": "../../../src/plugins/tree-box-label" },
+    { "module": "../../../src/plugins/tree-star" }
+  ]
+}
