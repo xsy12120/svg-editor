@@ -17,8 +17,15 @@ export class CommandInvoker<TContext> {
     } catch (error) {
       throw CommandRejectedError.from(error);
     }
-    const result = edit.apply(this.context);
+    let result: CommandResult;
+    try {
+      result = edit.apply(this.context);
+    } catch (error) {
+      this.rollback(edit);
+      throw CommandRejectedError.from(error);
+    }
     if (!result.success) {
+      this.rollback(edit);
       return result;
     }
 
@@ -54,8 +61,15 @@ export class CommandInvoker<TContext> {
       throw new CommandRejectedError("nothing to redo");
     }
 
-    const result = edit.apply(this.context);
+    let result: CommandResult;
+    try {
+      result = edit.apply(this.context);
+    } catch (error) {
+      this.rollback(edit);
+      throw CommandRejectedError.from(error);
+    }
     if (!result.success) {
+      this.rollback(edit);
       return result;
     }
 
@@ -75,6 +89,15 @@ export class CommandInvoker<TContext> {
       throw new CommandRejectedError(
         `${operation} not allowed after io command`
       );
+    }
+  }
+
+  private rollback(edit: PreparedEdit<TContext>): void {
+    try {
+      edit.rollback?.(this.context);
+    } catch {
+      // Preserve the original command error. A failed rollback is a defect
+      // that should be surfaced by tests for the concrete edit.
     }
   }
 }

@@ -23,4 +23,8 @@ export class AttributeHandlerEdit implements PreparedEdit<EditorSession> {
       affectedIds: this.change.affectedIds
     };
   }
+
+  rollback(): void {
+    this.change.revert();
+  }
 }

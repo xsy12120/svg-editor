@@ -88,6 +88,27 @@ class FailingRedoCommand implements UndoableCommand<CounterState> {
   }
 }
 
+class FailingApplyCommand implements UndoableCommand<CounterState> {
+  readonly kind = "edit";
+
+  prepare(state: CounterState): PreparedEdit<CounterState> {
+    const previousValue = state.value;
+    return {
+      apply(state: CounterState): CommandResult {
+        state.value += 1;
+        throw new Error("apply failed");
+      },
+      revert(state: CounterState): CommandResult {
+        state.value -= 1;
+        return success("apply failure reverted");
+      },
+      rollback(state: CounterState): void {
+        state.value = previousValue;
+      }
+    };
+  }
+}
+
 class TrackedCommand implements UndoableCommand<CounterState> {
   readonly kind = "edit";
   prepareCount = 0;
@@ -187,5 +208,21 @@ describe("CommandInvoker", () => {
     expect(command.prepareCount).toBe(1);
     expect(command.applyCount).toBe(2);
     expect(command.revertCount).toBe(1);
+  });
+
+  it("rolls back a partially applied edit without changing history", () => {
+    const state = { value: 0 };
+    const invoker = new CommandInvoker(state);
+    invoker.execute(new AddCommand(2));
+
+    expect(() => invoker.execute(new FailingApplyCommand())).toThrow(
+      "apply failed"
+    );
+    expect(state.value).toBe(2);
+
+    invoker.undo();
+    expect(state.value).toBe(0);
+    invoker.redo();
+    expect(state.value).toBe(2);
   });
 });
