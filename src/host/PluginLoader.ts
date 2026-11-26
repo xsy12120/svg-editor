@@ -20,6 +20,11 @@ interface PluginConfigEntry {
   readonly options?: PluginOptions;
 }
 
+interface ResolvedPluginModule {
+  readonly moduleUrl: string;
+  readonly manifestPath: string | null;
+}
+
 export class PluginLoader {
   constructor(private readonly host: PluginHost) {}
 
@@ -35,13 +40,13 @@ export class PluginLoader {
         continue;
       }
 
-      const moduleUrl = await this.resolveModule(entry.module, configPath);
-      if (moduleUrl === null) {
+      const resolved = await this.resolveModule(entry.module, configPath);
+      if (resolved === null) {
         errors.push(`error: plugin not found: ${entry.module}`);
         continue;
       }
 
-      const manifest = await this.readManifest(moduleUrl);
+      const manifest = await this.readManifest(resolved.manifestPath);
       if (manifest === null) {
         errors.push(
           `error: plugin failed to activate: ${entry.module} ` +
@@ -52,7 +57,9 @@ export class PluginLoader {
 
       let imported: Record<string, unknown>;
       try {
-        imported = (await import(moduleUrl)) as Record<string, unknown>;
+        imported = (await import(
+          resolved.moduleUrl
+        )) as Record<string, unknown>;
       } catch (error) {
         errors.push(
           `error: plugin failed to activate: ${manifest.name} ` +
@@ -117,30 +124,46 @@ export class PluginLoader {
   private async resolveModule(
     moduleSpecifier: string,
     configPath: string
-  ): Promise<string | null> {
+  ): Promise<ResolvedPluginModule | null> {
     try {
-      const moduleUrl =
-        moduleSpecifier.startsWith(".") || isAbsolute(moduleSpecifier)
-          ? pathToFileURL(
-              await this.resolveLocalEntry(
-                resolve(dirname(configPath), moduleSpecifier)
-              )
-            ).href
-          : import.meta.resolve(
-              moduleSpecifier,
-              pathToFileURL(configPath).href
-            );
-      await access(fileURLToPath(moduleUrl));
-      return moduleUrl;
+      if (
+        moduleSpecifier.startsWith(".") ||
+        isAbsolute(moduleSpecifier)
+      ) {
+        const local = await this.resolveLocalEntry(
+          resolve(dirname(configPath), moduleSpecifier)
+        );
+        await access(local.entryPath);
+        return {
+          moduleUrl: pathToFileURL(local.entryPath).href,
+          manifestPath:
+            local.manifestPath ??
+            (await this.findManifestPath(local.entryPath))
+        };
+      }
+
+      const moduleUrl = import.meta.resolve(
+        moduleSpecifier,
+        pathToFileURL(configPath).href
+      );
+      const entryPath = fileURLToPath(moduleUrl);
+      await access(entryPath);
+      return {
+        moduleUrl,
+        manifestPath: await this.findManifestPath(entryPath)
+      };
     } catch {
       return null;
     }
   }
 
-  private async resolveLocalEntry(pathname: string): Promise<string> {
+  private async resolveLocalEntry(pathname: string): Promise<{
+    readonly entryPath: string;
+    readonly manifestPath: string | null;
+  }> {
     const entry = await stat(pathname);
     if (!entry.isDirectory()) {
-      return pathname;
+      return { entryPath: pathname, manifestPath: null };
     }
 
     const packagePath = join(pathname, "package.json");
@@ -151,34 +174,45 @@ export class PluginLoader {
       throw new Error("invalid plugin package");
     }
     const main = packageJson["main"];
-    return resolve(
-      pathname,
-      typeof main === "string" ? main : "./index.js"
-    );
+    return {
+      entryPath: resolve(
+        pathname,
+        typeof main === "string" ? main : "./index.js"
+      ),
+      manifestPath: packagePath
+    };
   }
 
   private async readManifest(
-    moduleUrl: string
+    packagePath: string | null
   ): Promise<PluginManifest | null> {
-    let directory = dirname(fileURLToPath(moduleUrl));
+    if (packagePath === null) {
+      return null;
+    }
+    try {
+      return parseManifest(
+        JSON.parse(await readFile(packagePath, "utf8")) as unknown
+      );
+    } catch {
+      return null;
+    }
+  }
+
+  private async findManifestPath(
+    entryPath: string
+  ): Promise<string | null> {
+    let directory = dirname(entryPath);
     while (true) {
       const packagePath = join(directory, "package.json");
-      let content: string;
       try {
-        content = await readFile(packagePath, "utf8");
+        await access(packagePath);
+        return packagePath;
       } catch {
         const parent = dirname(directory);
         if (parent === directory) {
           return null;
         }
         directory = parent;
-        continue;
-      }
-
-      try {
-        return parseManifest(JSON.parse(content) as unknown);
-      } catch {
-        return null;
       }
     }
   }

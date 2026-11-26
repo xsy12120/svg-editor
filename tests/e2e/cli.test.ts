@@ -208,4 +208,28 @@ describe("CLI", () => {
     expect(result.stdout).toContain("error: invalid plugin config");
     expect(result.stdout).toContain("canvas 800x600 created");
   });
+
+  it("runs stats when the command plugin is configured", async () => {
+    const configPath = join(
+      projectRoot,
+      "tests",
+      "fixtures",
+      "configs",
+      "stats.json"
+    );
+
+    const result = await runCli("init\nstats\n", {
+      cliArgs: ["--config", configPath]
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("(total 0, containers 0)");
+  });
+
+  it("reports stats as unknown when its plugin is not loaded", async () => {
+    const result = await runCli("init\nstats\n");
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("error: unknown command: stats");
+  });
 });
