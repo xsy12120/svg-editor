@@ -4,13 +4,24 @@
   "private": true,
   "description": "A command-driven SVG editor for the Software Design PJ1 assignment",
   "type": "module",
+  "workspaces": [
+    "src/plugins/*"
+  ],
   "exports": {
-    ".": "./dist/main.js",
-    "./plugin-api": "./dist/plugin-api/index.js"
+    ".": {
+      "types": "./dist/main.d.ts",
+      "default": "./dist/main.js"
+    },
+    "./plugin-api": {
+      "types": "./dist/plugin-api/index.d.ts",
+      "default": "./dist/plugin-api/index.js"
+    }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "cli": "tsc -p tsconfig.build.json && node dist/main.js",
+    "build": "npm run build:core && npm run build:plugins",
+    "build:core": "tsc -p tsconfig.build.json",
+    "build:plugins": "npm run build --workspaces --if-present",
+    "cli": "npm run build && node dist/main.js",
     "typecheck": "tsc --noEmit",
     "pretest": "npm run build",
     "test": "vitest run",

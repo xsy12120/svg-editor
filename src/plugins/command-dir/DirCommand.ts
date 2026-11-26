@@ -4,7 +4,7 @@ import type {
   DirectoryReader,
   EditorCommandContext,
   QueryCommand
-} from "../../plugin-api/index.js";
+} from "svg-editor-pj1/plugin-api";
 
 const kindOrder: Readonly<Record<DirectoryEntry["kind"], number>> = {
   directory: 0,

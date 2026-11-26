@@ -3,7 +3,7 @@ import {
   type Shape,
   type ShapeInit,
   type ShapeProvider
-} from "../../plugin-api/index.js";
+} from "svg-editor-pj1/plugin-api";
 import { createDefaultSvgShape } from "./ShapeProviderSupport.js";
 
 export class RectProvider implements ShapeProvider {

@@ -12,6 +12,9 @@
     "useDefineForClassFields": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
+    "paths": {
+      "svg-editor-pj1/plugin-api": ["./src/plugin-api/index.ts"]
+    },
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noEmit": true,

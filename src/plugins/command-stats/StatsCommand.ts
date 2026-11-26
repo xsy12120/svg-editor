@@ -3,7 +3,7 @@ import type {
   EditorCommandContext,
   EditorShapeContext,
   QueryCommand
-} from "../../plugin-api/index.js";
+} from "svg-editor-pj1/plugin-api";
 
 export class StatsCommand implements QueryCommand<EditorCommandContext> {
   readonly kind = "query";

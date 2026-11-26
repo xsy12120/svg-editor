@@ -4,7 +4,7 @@ import type {
   EditorCommandContext,
   PluginManifest,
   SvgPlugin
-} from "../../plugin-api/index.js";
+} from "svg-editor-pj1/plugin-api";
 
 import { DirCommand } from "./DirCommand.js";
 

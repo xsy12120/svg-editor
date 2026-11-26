@@ -2,7 +2,7 @@ import type {
   PluginContributions,
   PluginManifest,
   SvgPlugin
-} from "../../plugin-api/index.js";
+} from "svg-editor-pj1/plugin-api";
 
 import { CircleProvider } from "./CircleProvider.js";
 import { EllipseProvider } from "./EllipseProvider.js";
