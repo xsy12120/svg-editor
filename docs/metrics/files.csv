@@ -1,0 +1,156 @@
+category,path,responsibility,baseLines,targetLines,lineDelta,baseComplexity,targetComplexity,complexityDelta,status
+kernel,src/application/EditorSession.ts,应用服务,23,48,25,1,4,3,changed
+kernel,src/application/commands/AddToCommand.ts,应用命令,38,38,0,9,9,0,unchanged
+kernel,src/application/commands/AddToCommandProvider.ts,应用命令,14,14,0,4,4,0,unchanged
+kernel,src/application/commands/AddToEdit.ts,应用命令,50,50,0,3,3,0,unchanged
+kernel,src/application/commands/AttributeHandlerEdit.ts,应用命令,0,26,26,0,1,1,added
+kernel,src/application/commands/BackCommandProvider.ts,应用命令,14,14,0,3,3,0,unchanged
+kernel,src/application/commands/CanvasCommand.ts,应用命令,18,18,0,1,1,0,unchanged
+kernel,src/application/commands/CanvasCommandProvider.ts,应用命令,40,40,0,7,7,0,unchanged
+kernel,src/application/commands/CanvasResizeCommand.ts,应用命令,32,32,0,6,6,0,unchanged
+kernel,src/application/commands/Command.ts,应用命令,5,5,0,1,1,0,unchanged
+kernel,src/application/commands/CommandResult.ts,应用命令,7,7,0,1,1,0,unchanged
+kernel,src/application/commands/CreateCommandProvider.ts,应用命令,17,17,0,2,2,0,changed
+kernel,src/application/commands/CreateShapeCommand.ts,应用命令,61,61,0,9,9,0,changed
+kernel,src/application/commands/CreateShapeEdit.ts,应用命令,36,36,0,4,4,0,unchanged
+kernel,src/application/commands/DeleteCommandProvider.ts,应用命令,14,14,0,3,3,0,unchanged
+kernel,src/application/commands/DeleteShapeCommand.ts,应用命令,18,18,0,3,3,0,unchanged
+kernel,src/application/commands/DeleteShapeEdit.ts,应用命令,39,39,0,2,2,0,unchanged
+kernel,src/application/commands/ExecutableCommand.ts,应用命令,16,16,0,1,1,0,unchanged
+kernel,src/application/commands/FrontCommandProvider.ts,应用命令,14,14,0,3,3,0,unchanged
+kernel,src/application/commands/GroupCommand.ts,应用命令,51,51,0,11,11,0,unchanged
+kernel,src/application/commands/GroupCommandProvider.ts,应用命令,15,15,0,3,3,0,unchanged
+kernel,src/application/commands/GroupEdit.ts,应用命令,56,56,0,5,5,0,unchanged
+kernel,src/application/commands/HelpCommand.ts,应用命令,20,20,0,2,2,0,changed
+kernel,src/application/commands/HelpCommandProvider.ts,应用命令,16,16,0,2,2,0,changed
+kernel,src/application/commands/InitCommandProvider.ts,应用命令,33,33,0,5,5,0,unchanged
+kernel,src/application/commands/InitDocumentCommand.ts,应用命令,26,26,0,5,5,0,unchanged
+kernel,src/application/commands/MoveCommandProvider.ts,应用命令,25,25,0,3,3,0,unchanged
+kernel,src/application/commands/MoveShapeCommand.ts,应用命令,19,19,0,3,3,0,unchanged
+kernel,src/application/commands/MoveShapeEdit.ts,应用命令,32,32,0,1,1,0,unchanged
+kernel,src/application/commands/PreparedEdit.ts,应用命令,5,6,1,1,2,1,changed
+kernel,src/application/commands/ReadDocumentCommand.ts,应用命令,39,39,0,4,4,0,unchanged
+kernel,src/application/commands/ReadDocumentCommandProvider.ts,应用命令,22,22,0,3,3,0,unchanged
+kernel,src/application/commands/RedoCommand.ts,应用命令,15,15,0,1,1,0,unchanged
+kernel,src/application/commands/RedoCommandProvider.ts,应用命令,16,16,0,2,2,0,unchanged
+kernel,src/application/commands/SaveDocumentCommand.ts,应用命令,40,41,1,6,6,0,changed
+kernel,src/application/commands/SaveDocumentCommandProvider.ts,应用命令,22,22,0,2,2,0,unchanged
+kernel,src/application/commands/ScaleCommandProvider.ts,应用命令,18,18,0,4,4,0,unchanged
+kernel,src/application/commands/ScaleShapeCommand.ts,应用命令,18,18,0,3,3,0,unchanged
+kernel,src/application/commands/ScaleShapeEdit.ts,应用命令,31,31,0,1,1,0,unchanged
+kernel,src/application/commands/SetAttributeCommand.ts,应用命令,25,34,9,1,2,1,changed
+kernel,src/application/commands/SetAttributeCommandProvider.ts,应用命令,20,22,2,5,5,0,changed
+kernel,src/application/commands/SetAttributeEdit.ts,应用命令,37,37,0,1,1,0,unchanged
+kernel,src/application/commands/ShapeCommandSupport.ts,应用命令,17,17,0,3,3,0,unchanged
+kernel,src/application/commands/ShapeFeedback.ts,应用命令,60,63,3,2,2,0,changed
+kernel,src/application/commands/ShowCommand.ts,应用命令,35,35,0,4,4,0,unchanged
+kernel,src/application/commands/ShowCommandProvider.ts,应用命令,16,16,0,3,3,0,unchanged
+kernel,src/application/commands/TreeCommand.ts,应用命令,35,39,4,5,5,0,changed
+kernel,src/application/commands/TreeCommandProvider.ts,应用命令,16,16,0,2,2,0,unchanged
+kernel,src/application/commands/UndoCommand.ts,应用命令,15,15,0,1,1,0,unchanged
+kernel,src/application/commands/UndoCommandProvider.ts,应用命令,16,16,0,2,2,0,unchanged
+kernel,src/application/commands/UndoableCommand.ts,应用命令,5,5,0,1,1,0,unchanged
+kernel,src/application/commands/UngroupCommand.ts,应用命令,34,34,0,5,5,0,unchanged
+kernel,src/application/commands/UngroupCommandProvider.ts,应用命令,14,14,0,3,3,0,unchanged
+kernel,src/application/commands/UngroupEdit.ts,应用命令,58,58,0,4,4,0,unchanged
+kernel,src/application/commands/ZOrderCommand.ts,应用命令,24,24,0,3,3,0,unchanged
+kernel,src/application/commands/ZOrderEdit.ts,应用命令,48,48,0,3,3,0,unchanged
+kernel,src/application/context/DocumentChangeState.ts,编辑上下文,0,102,102,0,14,14,added
+kernel,src/application/context/EditorCommandContext.ts,编辑上下文,0,19,19,0,1,1,added
+kernel,src/application/extensions/AttributeHandler.ts,扩展点接口与注册表,0,20,20,0,1,1,added
+kernel,src/application/extensions/AttributeHandlerRegistry.ts,扩展点接口与注册表,0,30,30,0,3,3,added
+kernel,src/application/extensions/CommandLookup.ts,扩展点接口与注册表,0,9,9,0,1,1,added
+kernel,src/application/extensions/CommandProvider.ts,扩展点接口与注册表,6,6,0,1,1,0,unchanged
+kernel,src/application/extensions/CommandRegistry.ts,扩展点接口与注册表,32,37,5,4,4,0,changed
+kernel,src/application/extensions/TreeDecorator.ts,扩展点接口与注册表,0,30,30,0,1,1,added
+kernel,src/application/extensions/TreeDecoratorRegistry.ts,扩展点接口与注册表,0,41,41,0,5,5,added
+kernel,src/application/history/CommandInvoker.ts,撤销与重做,66,111,45,8,16,8,changed
+kernel,src/application/history/CommandProcessor.ts,撤销与重做,25,25,0,5,5,0,unchanged
+kernel,src/application/ports/DirectoryReader.ts,应用端口,0,13,13,0,1,1,added
+kernel,src/application/ports/FileStore.ts,应用端口,4,4,0,1,1,0,unchanged
+kernel,src/application/ports/ShapeCreator.ts,应用端口,5,5,0,1,1,0,unchanged
+kernel,src/application/ports/ShapeDetailsRenderer.ts,应用端口,4,4,0,1,1,0,unchanged
+kernel,src/application/ports/SvgCodec.ts,应用端口,9,9,0,1,1,0,unchanged
+kernel,src/application/ports/SvgShapeReader.ts,应用端口,0,14,14,0,1,1,added
+kernel,src/application/ports/TreeSnapshotRenderer.ts,应用端口,4,4,0,1,1,0,unchanged
+kernel,src/application/queries/CommandView.ts,查询快照,11,11,0,1,1,0,unchanged
+kernel,src/application/queries/ShapeDetailsSnapshot.ts,查询快照,11,11,0,1,1,0,unchanged
+kernel,src/application/queries/ShapeDetailsSnapshotBuilder.ts,查询快照,20,20,0,2,2,0,unchanged
+kernel,src/application/queries/TreeSnapshot.ts,查询快照,20,22,2,1,1,0,changed
+kernel,src/application/queries/TreeSnapshotBuilder.ts,查询快照,41,96,55,4,6,2,changed
+kernel,src/application/shapes/ShapeCatalog.ts,图形工厂与目录,0,5,5,0,1,1,added
+kernel,src/application/shapes/ShapeFactory.ts,图形工厂与目录,34,72,38,5,8,3,changed
+kernel,src/application/shapes/ShapeInit.ts,图形工厂与目录,5,5,0,1,1,0,unchanged
+kernel,src/application/shapes/ShapeProvider.ts,图形工厂与目录,7,14,7,1,1,0,changed
+kernel,src/application/shapes/providers/CircleProvider.ts,图形工厂与目录,42,0,-42,4,0,-4,removed
+kernel,src/application/shapes/providers/EllipseProvider.ts,图形工厂与目录,46,0,-46,4,0,-4,removed
+kernel,src/application/shapes/providers/GroupProvider.ts,图形工厂与目录,22,0,-22,2,0,-2,removed
+kernel,src/application/shapes/providers/LineProvider.ts,图形工厂与目录,45,0,-45,4,0,-4,removed
+kernel,src/application/shapes/providers/RectProvider.ts,图形工厂与目录,68,0,-68,11,0,-11,removed
+kernel,src/application/shapes/providers/ShapeProviderSupport.ts,图形工厂与目录,47,0,-47,7,0,-7,removed
+kernel,src/application/shapes/providers/TextProvider.ts,图形工厂与目录,49,0,-49,4,0,-4,removed
+assembly,src/bootstrap/CompositionRoot.ts,组合根与装配,87,145,58,1,7,6,changed
+kernel,src/domain/model/CanvasSize.ts,领域模型,19,19,0,5,5,0,unchanged
+kernel,src/domain/model/Document.ts,领域模型,130,137,7,25,27,2,changed
+kernel,src/domain/model/ShapePlacement.ts,领域模型,5,5,0,1,1,0,unchanged
+kernel,src/domain/shapes/Circle.ts,领域模型,130,130,0,18,18,0,unchanged
+kernel,src/domain/shapes/ContainerShape.ts,领域模型,154,164,10,32,34,2,changed
+kernel,src/domain/shapes/Ellipse.ts,领域模型,121,121,0,15,15,0,unchanged
+kernel,src/domain/shapes/GeometryState.ts,领域模型,3,3,0,1,1,0,unchanged
+kernel,src/domain/shapes/Group.ts,领域模型,36,36,0,3,3,0,unchanged
+kernel,src/domain/shapes/Line.ts,领域模型,121,121,0,15,15,0,unchanged
+kernel,src/domain/shapes/Point.ts,领域模型,22,22,0,3,3,0,unchanged
+kernel,src/domain/shapes/Rect.ts,领域模型,145,145,0,15,15,0,unchanged
+kernel,src/domain/shapes/Shape.ts,领域模型,56,62,6,2,2,0,changed
+kernel,src/domain/shapes/ShapeDescriptor.ts,领域模型,9,9,0,1,1,0,unchanged
+kernel,src/domain/shapes/ShapeId.ts,领域模型,12,12,0,2,2,0,unchanged
+kernel,src/domain/shapes/ShapeStyle.ts,领域模型,55,55,0,15,15,0,unchanged
+kernel,src/domain/shapes/Size.ts,领域模型,22,22,0,5,5,0,unchanged
+kernel,src/domain/shapes/Text.ts,领域模型,145,145,0,25,25,0,unchanged
+assembly,src/host/PluginHost.ts,插件宿主与加载,0,237,237,0,24,24,added
+assembly,src/host/PluginLoader.ts,插件宿主与加载,0,288,288,0,57,57,added
+kernel,src/infrastructure/fs/NodeDirectoryReader.ts,文件系统适配器,0,36,36,0,4,4,added
+kernel,src/infrastructure/fs/NodeFileStore.ts,文件系统适配器,27,27,0,2,2,0,unchanged
+kernel,src/infrastructure/svg/SvgDocumentParser.ts,SVG 编解码与解析,174,169,-5,36,34,-2,changed
+kernel,src/infrastructure/svg/SvgDocumentSerializer.ts,SVG 编解码与解析,59,59,0,5,5,0,unchanged
+kernel,src/infrastructure/svg/SvgIdAllocator.ts,SVG 编解码与解析,18,18,0,4,4,0,unchanged
+kernel,src/infrastructure/svg/SvgTransform.ts,SVG 编解码与解析,86,86,0,22,22,0,unchanged
+kernel,src/infrastructure/svg/XmlSvgCodec.ts,SVG 编解码与解析,22,22,0,1,1,0,changed
+kernel,src/interfaces/cli/CliApplication.ts,CLI 接口与呈现,44,44,0,5,5,0,changed
+kernel,src/interfaces/cli/CliPluginDiagnosticFormatter.ts,CLI 接口与呈现,0,52,52,0,9,9,added
+kernel,src/interfaces/cli/CliPresenter.ts,CLI 接口与呈现,35,35,0,6,6,0,unchanged
+kernel,src/interfaces/cli/CliShapeDetailsRenderer.ts,CLI 接口与呈现,41,41,0,6,6,0,unchanged
+kernel,src/interfaces/cli/CliTreeRenderer.ts,CLI 接口与呈现,69,85,16,8,9,1,changed
+kernel,src/interfaces/cli/CommandParser.ts,CLI 接口与呈现,72,72,0,16,16,0,unchanged
+assembly,src/main.ts,CLI 启动,3,19,16,1,6,5,changed
+kernel,src/plugin-api/Plugin.ts,插件公开接口,0,56,56,0,1,1,added
+kernel,src/plugin-api/index.ts,插件公开接口,0,71,71,0,1,1,added
+plugin,src/plugins/builtin-shapes/CircleProvider.ts,插件实现,0,57,57,0,4,4,added
+plugin,src/plugins/builtin-shapes/EllipseProvider.ts,插件实现,0,61,61,0,4,4,added
+plugin,src/plugins/builtin-shapes/GroupProvider.ts,插件实现,0,47,47,0,3,3,added
+plugin,src/plugins/builtin-shapes/LineProvider.ts,插件实现,0,60,60,0,4,4,added
+plugin,src/plugins/builtin-shapes/RectProvider.ts,插件实现,0,85,85,0,11,11,added
+plugin,src/plugins/builtin-shapes/ShapeProviderSupport.ts,插件实现,0,73,73,0,9,9,added
+plugin,src/plugins/builtin-shapes/TextProvider.ts,插件实现,0,64,64,0,4,4,added
+plugin,src/plugins/builtin-shapes/index.ts,插件实现,0,37,37,0,1,1,added
+plugin,src/plugins/command-dir/DirCommand.ts,插件实现,0,68,68,0,5,5,added
+plugin,src/plugins/command-dir/index.ts,插件实现,0,40,40,0,3,3,added
+plugin,src/plugins/command-stats/StatsCommand.ts,插件实现,0,49,49,0,7,7,added
+plugin,src/plugins/command-stats/index.ts,插件实现,0,32,32,0,2,2,added
+plugin,src/plugins/shape-box/Box.ts,插件实现,0,72,72,0,9,9,added
+plugin,src/plugins/shape-box/BoxAttributeHandler.ts,插件实现,0,56,56,0,7,7,added
+plugin,src/plugins/shape-box/BoxProvider.ts,插件实现,0,121,121,0,13,13,added
+plugin,src/plugins/shape-box/index.ts,插件实现,0,23,23,0,1,1,added
+plugin,src/plugins/tree-box-label/BoxTypeLabelDecorator.ts,插件实现,0,10,10,0,2,2,added
+plugin,src/plugins/tree-box-label/index.ts,插件实现,0,20,20,0,1,1,added
+plugin,src/plugins/tree-star/ModifiedStarDecorator.ts,插件实现,0,25,25,0,5,5,added
+plugin,src/plugins/tree-star/index.ts,插件实现,0,20,20,0,1,1,added
+kernel,src/shared/errors/CommandRejectedError.ts,共享错误,10,10,0,3,3,0,unchanged
+kernel,src/shared/errors/UserFacingError.ts,共享错误,6,6,0,1,1,0,unchanged
+kernel,src/shared/errors/UserInputError.ts,共享错误,2,2,0,1,1,0,unchanged
+vscode-extension,vscode-extension/src/extension.ts,VSCode 扩展（单独统计）,0,20,20,0,1,1,added
+vscode-extension,vscode-extension/src/svgFileDecoration.ts,VSCode 扩展（单独统计）,0,38,38,0,5,5,added
+vscode-extension,vscode-extension/src/svgOutlineParser.ts,VSCode 扩展（单独统计）,0,333,333,0,72,72,added
+vscode-extension,vscode-extension/src/svgOutlineProvider.ts,VSCode 扩展（单独统计）,0,37,37,0,3,3,added
+vscode-extension,vscode-extension/src/svgOutlineSymbolMapper.ts,VSCode 扩展（单独统计）,0,44,44,0,3,3,added
+vscode-extension,vscode-extension/src/vscodeSvgEntryInspector.ts,VSCode 扩展（单独统计）,0,20,20,0,3,3,added
