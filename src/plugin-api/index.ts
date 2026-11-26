@@ -38,6 +38,8 @@ export type { ShapeProvider } from "../application/shapes/ShapeProvider.js";
 export type {
   PluginActivationResult,
   PluginContributions,
+  PluginDiagnostic,
+  PluginDiagnosticCode,
   PluginManifest,
   PluginOptions,
   PluginRegistrationContext,

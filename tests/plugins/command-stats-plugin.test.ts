@@ -146,7 +146,7 @@ describe("stats command plugin", () => {
       config.commands.create("stats", [])
     );
 
-    expect(loadResult.errors).toEqual([]);
+    expect(loadResult.diagnostics).toEqual([]);
     expect(configResult.message).toBe(codeResult.message);
   });
 });

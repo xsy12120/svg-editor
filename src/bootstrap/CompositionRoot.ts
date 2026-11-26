@@ -32,6 +32,7 @@ import { CliApplication } from "../interfaces/cli/CliApplication.js";
 import { CliPresenter } from "../interfaces/cli/CliPresenter.js";
 import { CliShapeDetailsRenderer } from "../interfaces/cli/CliShapeDetailsRenderer.js";
 import { CliTreeRenderer } from "../interfaces/cli/CliTreeRenderer.js";
+import { CliPluginDiagnosticFormatter } from "../interfaces/cli/CliPluginDiagnosticFormatter.js";
 import { NodeFileStore } from "../infrastructure/fs/NodeFileStore.js";
 import { NodeDirectoryReader } from "../infrastructure/fs/NodeDirectoryReader.js";
 import { XmlSvgCodec } from "../infrastructure/svg/XmlSvgCodec.js";
@@ -69,12 +70,15 @@ export async function createCliApplication(
     },
     { directoryReader: directories }
   );
+  const diagnosticFormatter = new CliPluginDiagnosticFormatter();
   const builtinResult = pluginHost.activate(
     builtinShapesPlugin,
     builtinShapesManifest
   );
   if (!builtinResult.success) {
-    throw new Error(builtinResult.error);
+    throw new Error(
+      diagnosticFormatter.format(builtinResult.diagnostic)
+    );
   }
   const svgCodec = new XmlSvgCodec(shapes);
 
@@ -105,8 +109,8 @@ export async function createCliApplication(
   if (options.configPath !== undefined) {
     const loader = new PluginLoader(pluginHost);
     const result = await loader.loadConfigFile(options.configPath);
-    for (const error of result.errors) {
-      output.write(`${error}\n`);
+    for (const diagnostic of result.diagnostics) {
+      output.write(`${diagnosticFormatter.format(diagnostic)}\n`);
     }
   }
 

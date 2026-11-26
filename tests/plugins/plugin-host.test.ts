@@ -111,8 +111,11 @@ describe("PluginHost", () => {
 
     expect(result).toEqual({
       success: false,
-      error:
-        "error: plugin failed to activate: @fixture/failure (boom)"
+      diagnostic: {
+        code: "activation-failed",
+        plugin: "@fixture/failure",
+        reason: "boom"
+      }
     });
     expect(commands.listHelpEntries()).toEqual([]);
   });
@@ -129,10 +132,12 @@ describe("PluginHost", () => {
 
     expect(result).toEqual({
       success: false,
-      error:
-        "error: plugin manifest mismatch: @fixture/mismatch " +
-        "(declared: commands=[declared-command]; " +
-        "registered: commands=[actual-command])"
+      diagnostic: {
+        code: "manifest-mismatch",
+        plugin: "@fixture/mismatch",
+        declared: { commands: ["declared-command"] },
+        registered: { commands: ["actual-command"] }
+      }
     });
     expect(commands.listHelpEntries()).toEqual([]);
   });
@@ -153,7 +158,11 @@ describe("PluginHost", () => {
 
     expect(result).toEqual({
       success: false,
-      error: "error: duplicate registration: commands/duplicate"
+      diagnostic: {
+        code: "duplicate-registration",
+        category: "commands",
+        name: "duplicate"
+      }
     });
     expect(commands.listHelpEntries()).toEqual([
       { name: "duplicate", usage: "duplicate" }

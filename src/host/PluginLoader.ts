@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import type {
   PluginContributions,
+  PluginDiagnostic,
   PluginManifest,
   PluginOptions,
   SvgPlugin
@@ -11,7 +12,7 @@ import type {
 import type { PluginHost } from "./PluginHost.js";
 
 export interface PluginLoadResult {
-  readonly errors: readonly string[];
+  readonly diagnostics: readonly PluginDiagnostic[];
 }
 
 interface PluginConfigEntry {
@@ -31,10 +32,10 @@ export class PluginLoader {
   async loadConfigFile(configPath: string): Promise<PluginLoadResult> {
     const entries = await this.readConfig(configPath);
     if (entries === null) {
-      return { errors: ["error: invalid plugin config"] };
+      return { diagnostics: [{ code: "invalid-config" }] };
     }
 
-    const errors: string[] = [];
+    const diagnostics: PluginDiagnostic[] = [];
     for (const entry of entries) {
       if (entry.enabled === false) {
         continue;
@@ -42,16 +43,17 @@ export class PluginLoader {
 
       const resolved = await this.resolveModule(entry.module, configPath);
       if (resolved === null) {
-        errors.push(`error: plugin not found: ${entry.module}`);
+        diagnostics.push({ code: "not-found", module: entry.module });
         continue;
       }
 
       const manifest = await this.readManifest(resolved.manifestPath);
       if (manifest === null) {
-        errors.push(
-          `error: plugin failed to activate: ${entry.module} ` +
-            "(invalid plugin package)"
-        );
+        diagnostics.push({
+          code: "activation-failed",
+          plugin: entry.module,
+          reason: "invalid plugin package"
+        });
         continue;
       }
 
@@ -61,26 +63,29 @@ export class PluginLoader {
           resolved.moduleUrl
         )) as Record<string, unknown>;
       } catch (error) {
-        errors.push(
-          `error: plugin failed to activate: ${manifest.name} ` +
-            `(${reasonOf(error)})`
-        );
+        diagnostics.push({
+          code: "activation-failed",
+          plugin: manifest.name,
+          reason: reasonOf(error)
+        });
         continue;
       }
 
       if (!Object.hasOwn(imported, "default")) {
-        errors.push(
-          `error: plugin has no default export: ${entry.module}`
-        );
+        diagnostics.push({
+          code: "no-default-export",
+          module: entry.module
+        });
         continue;
       }
 
       const plugin = imported["default"];
       if (!isSvgPlugin(plugin)) {
-        errors.push(
-          `error: plugin failed to activate: ${manifest.name} ` +
-            "(default export must implement activate)"
-        );
+        diagnostics.push({
+          code: "activation-failed",
+          plugin: manifest.name,
+          reason: "default export must implement activate"
+        });
         continue;
       }
 
@@ -90,11 +95,11 @@ export class PluginLoader {
         entry.options
       );
       if (!result.success) {
-        errors.push(result.error);
+        diagnostics.push(result.diagnostic);
       }
     }
 
-    return { errors };
+    return { diagnostics };
   }
 
   private async readConfig(

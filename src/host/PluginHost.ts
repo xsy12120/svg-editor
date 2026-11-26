@@ -7,6 +7,7 @@ import type { ShapeProvider } from "../application/shapes/ShapeProvider.js";
 import type {
   PluginActivationResult,
   PluginContributions,
+  PluginDiagnostic,
   PluginManifest,
   PluginOptions,
   PluginRegistrationContext,
@@ -50,11 +51,15 @@ export class PluginHost {
       plugin.activate(staged, options);
     } catch (error) {
       if (error instanceof DuplicateRegistrationError) {
-        return { success: false, error: error.message };
+        return { success: false, diagnostic: error.diagnostic };
       }
       return {
         success: false,
-        error: `error: plugin failed to activate: ${manifest.name} (${reasonOf(error)})`
+        diagnostic: {
+          code: "activation-failed",
+          plugin: manifest.name,
+          reason: reasonOf(error)
+        }
       };
     }
 
@@ -63,9 +68,12 @@ export class PluginHost {
     if (!sameContributions(declared, registered)) {
       return {
         success: false,
-        error:
-          `error: plugin manifest mismatch: ${manifest.name} ` +
-          `(${formatContributionDiff(declared, registered)})`
+        diagnostic: {
+          code: "manifest-mismatch",
+          plugin: manifest.name,
+          declared: compactContributions(declared),
+          registered: compactContributions(registered)
+        }
       };
     }
 
@@ -73,7 +81,11 @@ export class PluginHost {
     if (duplicate !== undefined) {
       return {
         success: false,
-        error: `error: duplicate registration: ${duplicate.category}/${duplicate.name}`
+        diagnostic: {
+          code: "duplicate-registration",
+          category: duplicate.category,
+          name: duplicate.name
+        }
       };
     }
 
@@ -171,14 +183,22 @@ class StagedPluginContext implements PluginRegistrationContext {
       this.contributions()[category].includes(name)
     ) {
       throw new DuplicateRegistrationError(
-        `error: duplicate registration: ${category}/${name}`
+        {
+          code: "duplicate-registration",
+          category,
+          name
+        }
       );
     }
     target.push(value);
   }
 }
 
-class DuplicateRegistrationError extends Error {}
+class DuplicateRegistrationError extends Error {
+  constructor(readonly diagnostic: PluginDiagnostic) {
+    super(`duplicate registration: ${diagnostic.category}/${diagnostic.name}`);
+  }
+}
 
 function normalizeContributions(
   contributions: PluginContributions
@@ -210,18 +230,21 @@ function sameContributions(
   );
 }
 
-function formatContributionDiff(
-  declared: Readonly<Record<Category, readonly string[]>>,
-  registered: Readonly<Record<Category, readonly string[]>>
-): string {
-  const format = (
-    values: Readonly<Record<Category, readonly string[]>>
-  ): string =>
-    categories
-      .filter((category) => values[category].length > 0)
-      .map((category) => `${category}=[${values[category].join(",")}]`)
-      .join("; ");
-  return `declared: ${format(declared)}; registered: ${format(registered)}`;
+function compactContributions(
+  values: Readonly<Record<Category, readonly string[]>>
+): PluginContributions {
+  return {
+    ...(values.shapes.length === 0 ? {} : { shapes: values.shapes }),
+    ...(values.commands.length === 0
+      ? {}
+      : { commands: values.commands }),
+    ...(values.decorators.length === 0
+      ? {}
+      : { decorators: values.decorators }),
+    ...(values.attributes.length === 0
+      ? {}
+      : { attributes: values.attributes })
+  };
 }
 
 function reasonOf(error: unknown): string {

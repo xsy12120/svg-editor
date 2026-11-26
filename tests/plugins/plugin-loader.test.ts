@@ -10,6 +10,7 @@ import { TreeDecoratorRegistry } from "../../src/application/extensions/TreeDeco
 import { ShapeFactory } from "../../src/application/shapes/ShapeFactory.js";
 import { PluginHost } from "../../src/host/PluginHost.js";
 import { PluginLoader } from "../../src/host/PluginLoader.js";
+import { CliPluginDiagnosticFormatter } from "../../src/interfaces/cli/CliPluginDiagnosticFormatter.js";
 import type { SvgPlugin } from "../../src/plugin-api/Plugin.js";
 
 const projectRoot = fileURLToPath(new URL("../../", import.meta.url));
@@ -34,7 +35,8 @@ describe("PluginLoader", () => {
       join(fixtureDirectory, "configs", "failures.json")
     );
 
-    expect(result.errors).toEqual([
+    const formatter = new CliPluginDiagnosticFormatter();
+    expect(result.diagnostics.map((item) => formatter.format(item))).toEqual([
       "error: plugin has no default export: ../plugins/no-default/index.js",
       "error: plugin not found: ../plugins/missing/index.js",
       "error: plugin manifest mismatch: @fixture/mismatch " +
@@ -56,9 +58,14 @@ describe("PluginLoader", () => {
       join(fixtureDirectory, "configs", "duplicate.json")
     );
 
-    expect(result.errors).toEqual([
-      "error: duplicate registration: commands/fixture-good"
+    expect(result.diagnostics.map((item) => item.code)).toEqual([
+      "duplicate-registration"
     ]);
+    expect(
+      new CliPluginDiagnosticFormatter().format(result.diagnostics[0]!)
+    ).toBe(
+      "error: duplicate registration: commands/fixture-good"
+    );
     expect(commands.listHelpEntries().map((entry) => entry.name)).toEqual([
       "fixture-good",
       "fixture-terminal"
@@ -72,7 +79,7 @@ describe("PluginLoader", () => {
       join(fixtureDirectory, "configs", "disabled.json")
     );
 
-    expect(result.errors).toEqual([]);
+    expect(result.diagnostics).toEqual([]);
     expect(commands.listHelpEntries().map((entry) => entry.name)).toEqual([
       "fixture-terminal"
     ]);
@@ -85,7 +92,7 @@ describe("PluginLoader", () => {
       join(fixtureDirectory, "configs", "package-directory.json")
     );
 
-    expect(result.errors).toEqual([]);
+    expect(result.diagnostics).toEqual([]);
     expect(commands.has("fixture-good")).toBe(true);
   });
 
@@ -96,7 +103,7 @@ describe("PluginLoader", () => {
       join(fixtureDirectory, "configs", "invalid.json")
     );
 
-    expect(result.errors).toEqual(["error: invalid plugin config"]);
+    expect(result.diagnostics).toEqual([{ code: "invalid-config" }]);
   });
 
   it("reports module evaluation failures as plugin activation failures", async () => {
@@ -106,11 +113,14 @@ describe("PluginLoader", () => {
       join(fixtureDirectory, "configs", "evaluation-error.json")
     );
 
-    expect(result.errors).toHaveLength(1);
-    expect(result.errors[0]).toContain(
+    const formatted = result.diagnostics.map((item) =>
+      new CliPluginDiagnosticFormatter().format(item)
+    );
+    expect(formatted).toHaveLength(1);
+    expect(formatted[0]).toContain(
       "error: plugin failed to activate: @fixture/evaluation-error"
     );
-    expect(result.errors[0]).not.toContain("plugin not found");
+    expect(formatted[0]).not.toContain("plugin not found");
   });
 
   it("produces the same behavior through code and config assembly", async () => {
@@ -136,7 +146,7 @@ describe("PluginLoader", () => {
     const loadResult = await configured.loader.loadConfigFile(
       join(fixtureDirectory, "configs", "good.json")
     );
-    expect(loadResult.errors).toEqual([]);
+    expect(loadResult.diagnostics).toEqual([]);
 
     const session = new EditorSession();
     const codeCommand = code.commands.create("fixture-good", ["value"]);

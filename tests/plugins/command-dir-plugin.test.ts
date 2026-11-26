@@ -197,7 +197,7 @@ describe("dir command plugin", () => {
       config.commands.create("dir", [])
     );
 
-    expect(loadResult.errors).toEqual([]);
+    expect(loadResult.diagnostics).toEqual([]);
     expect(configResult.message).toBe(codeResult.message);
   });
 });

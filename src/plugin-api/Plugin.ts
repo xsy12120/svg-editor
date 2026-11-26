@@ -19,6 +19,25 @@ export interface PluginManifest {
   readonly contributes: PluginContributions;
 }
 
+export type PluginDiagnosticCode =
+  | "not-found"
+  | "no-default-export"
+  | "manifest-mismatch"
+  | "activation-failed"
+  | "duplicate-registration"
+  | "invalid-config";
+
+export interface PluginDiagnostic {
+  readonly code: PluginDiagnosticCode;
+  readonly module?: string;
+  readonly plugin?: string;
+  readonly reason?: string;
+  readonly category?: keyof PluginContributions;
+  readonly name?: string;
+  readonly declared?: PluginContributions;
+  readonly registered?: PluginContributions;
+}
+
 export interface PluginServices {
   readonly directoryReader?: DirectoryReader;
 }
@@ -40,4 +59,7 @@ export interface SvgPlugin {
 
 export type PluginActivationResult =
   | { readonly success: true }
-  | { readonly success: false; readonly error: string };
+  | {
+      readonly success: false;
+      readonly diagnostic: PluginDiagnostic;
+    };

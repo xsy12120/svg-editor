@@ -116,4 +116,18 @@ describe("architecture dependency rules", () => {
     );
     expect(source).toContain("EditorDocumentContext");
   });
+
+  it("keeps plugin diagnostic formatting out of host code", async () => {
+    const hostSource = await readFile(
+      join(projectRoot, "src", "host", "PluginHost.ts"),
+      "utf8"
+    );
+    const loaderSource = await readFile(
+      join(projectRoot, "src", "host", "PluginLoader.ts"),
+      "utf8"
+    );
+
+    expect(hostSource).not.toContain("error: plugin");
+    expect(loaderSource).not.toContain("error: plugin");
+  });
 });
