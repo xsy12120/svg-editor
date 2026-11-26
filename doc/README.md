@@ -356,7 +356,7 @@ npm run build
 
 ### 1.1 文件标记截图
 
-![alt text](<屏幕截图 2026-11-24 203653.png>)
+![alt text](<images/文件标记.png>)
 
 预期结果：
 
@@ -367,7 +367,7 @@ npm run build
 
 ### 1.2 SVG 大纲与源码定位截图
 
-![alt text](image.png)
+![alt text](images/SVG大纲与源码定位.png)
 
 预期结果：
 
@@ -379,7 +379,7 @@ npm run build
 
 ### 1.3 异常 XML 截图
 
-![alt text](image-1.png)
+![alt text](images/异常XML.png)
 
 不完整 XML 的允许行为是暂时清空 Outline。修复 XML 后，Outline 恢复。
 
