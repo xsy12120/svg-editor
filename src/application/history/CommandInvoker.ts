@@ -21,11 +21,21 @@ export class CommandInvoker<TContext> {
     try {
       result = edit.apply(this.context);
     } catch (error) {
-      this.rollback(edit);
+      const rollbackError = this.rollback(edit);
+      if (rollbackError !== undefined) {
+        throw new CommandRejectedError(
+          `command failed: ${reasonOf(error)}; rollback failed: ${reasonOf(rollbackError)}`
+        );
+      }
       throw CommandRejectedError.from(error);
     }
     if (!result.success) {
-      this.rollback(edit);
+      const rollbackError = this.rollback(edit);
+      if (rollbackError !== undefined) {
+        throw new CommandRejectedError(
+          `command failed: ${result.message}; rollback failed: ${reasonOf(rollbackError)}`
+        );
+      }
       return result;
     }
 
@@ -65,11 +75,21 @@ export class CommandInvoker<TContext> {
     try {
       result = edit.apply(this.context);
     } catch (error) {
-      this.rollback(edit);
+      const rollbackError = this.rollback(edit);
+      if (rollbackError !== undefined) {
+        throw new CommandRejectedError(
+          `command failed: ${reasonOf(error)}; rollback failed: ${reasonOf(rollbackError)}`
+        );
+      }
       throw CommandRejectedError.from(error);
     }
     if (!result.success) {
-      this.rollback(edit);
+      const rollbackError = this.rollback(edit);
+      if (rollbackError !== undefined) {
+        throw new CommandRejectedError(
+          `command failed: ${result.message}; rollback failed: ${reasonOf(rollbackError)}`
+        );
+      }
       return result;
     }
 
@@ -92,12 +112,16 @@ export class CommandInvoker<TContext> {
     }
   }
 
-  private rollback(edit: PreparedEdit<TContext>): void {
+  private rollback(edit: PreparedEdit<TContext>): unknown | undefined {
     try {
       edit.rollback?.(this.context);
-    } catch {
-      // Preserve the original command error. A failed rollback is a defect
-      // that should be surfaced by tests for the concrete edit.
+      return undefined;
+    } catch (error) {
+      return error;
     }
   }
+}
+
+function reasonOf(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

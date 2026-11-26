@@ -109,6 +109,25 @@ class FailingApplyCommand implements UndoableCommand<CounterState> {
   }
 }
 
+class FailingRollbackCommand implements UndoableCommand<CounterState> {
+  readonly kind = "edit";
+
+  prepare(): PreparedEdit<CounterState> {
+    return {
+      apply(state: CounterState): CommandResult {
+        state.value += 1;
+        throw new Error("apply failed");
+      },
+      revert(): CommandResult {
+        return success("unused");
+      },
+      rollback(): void {
+        throw new Error("rollback failed");
+      }
+    };
+  }
+}
+
 class TrackedCommand implements UndoableCommand<CounterState> {
   readonly kind = "edit";
   prepareCount = 0;
@@ -224,5 +243,15 @@ describe("CommandInvoker", () => {
     expect(state.value).toBe(0);
     invoker.redo();
     expect(state.value).toBe(2);
+  });
+
+  it("surfaces a rollback failure after an apply failure", () => {
+    const state = { value: 0 };
+    const invoker = new CommandInvoker(state);
+
+    expect(() => invoker.execute(new FailingRollbackCommand())).toThrow(
+      "command failed: apply failed; rollback failed: rollback failed"
+    );
+    expect(state.value).toBe(1);
   });
 });
