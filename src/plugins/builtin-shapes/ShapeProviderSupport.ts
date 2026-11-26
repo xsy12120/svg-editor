@@ -16,6 +16,18 @@ export function createDefaultSvgShape(
   });
 }
 
+export function applyCommonStyleAttributes(
+  shape: Shape,
+  attributes: Readonly<Record<string, string>>
+): void {
+  for (const name of ["fill", "stroke", "stroke-width"]) {
+    const value = attributes[name];
+    if (value !== undefined) {
+      shape.setAttribute(name, value);
+    }
+  }
+}
+
 export function requireShapeId(
   value: string | undefined,
   typeName: string

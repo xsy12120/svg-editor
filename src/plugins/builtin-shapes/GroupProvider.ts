@@ -4,7 +4,11 @@ import {
   type ShapeInit,
   type ShapeProvider
 } from "svg-editor-pj1/plugin-api";
-import { assertShapeType, requireShapeId } from "./ShapeProviderSupport.js";
+import {
+  applyCommonStyleAttributes,
+  assertShapeType,
+  requireShapeId
+} from "./ShapeProviderSupport.js";
 
 export class GroupProvider implements ShapeProvider {
   readonly typeName = "g";
@@ -28,13 +32,19 @@ export class GroupProvider implements ShapeProvider {
 
   create(init: ShapeInit): Shape {
     assertShapeType(init, this.typeName);
-    return new Group(init.id);
+    const group = new Group(init.id);
+    applyCommonStyleAttributes(group, init.attributes);
+    return group;
   }
 
   createFromSvg(
     request: Parameters<ShapeProvider["createFromSvg"]>[0]
   ): Shape {
-    const group = new Group(request.id);
+    const group = this.create({
+      typeName: this.typeName,
+      id: request.id,
+      attributes: request.attributes
+    }) as Group;
     for (const child of request.children) {
       group.addChild(child);
     }

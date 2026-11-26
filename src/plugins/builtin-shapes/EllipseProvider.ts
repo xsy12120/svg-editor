@@ -6,6 +6,7 @@ import {
 } from "svg-editor-pj1/plugin-api";
 import {
   assertShapeType,
+  applyCommonStyleAttributes,
   createDefaultSvgShape,
   parseFiniteNumber,
   parsePositiveNumber,
@@ -48,13 +49,15 @@ export class EllipseProvider implements ShapeProvider {
 
   create(init: ShapeInit): Shape {
     assertShapeType(init, this.typeName);
-    return new Ellipse({
+    const shape = new Ellipse({
       id: init.id,
       cx: parseFiniteNumber(init.attributes["cx"], "ellipse cx"),
       cy: parseFiniteNumber(init.attributes["cy"], "ellipse cy"),
       rx: parsePositiveNumber(init.attributes["rx"], "ellipse rx"),
       ry: parsePositiveNumber(init.attributes["ry"], "ellipse ry")
     });
+    applyCommonStyleAttributes(shape, init.attributes);
+    return shape;
   }
 
   createFromSvg(

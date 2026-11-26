@@ -6,6 +6,7 @@ import {
 } from "svg-editor-pj1/plugin-api";
 import {
   assertShapeType,
+  applyCommonStyleAttributes,
   createDefaultSvgShape,
   parseFiniteNumber,
   parsePositiveNumber,
@@ -40,7 +41,7 @@ export class TextProvider implements ShapeProvider {
 
   create(init: ShapeInit): Shape {
     assertShapeType(init, this.typeName);
-    return new Text({
+    const shape = new Text({
       id: init.id,
       x: parseFiniteNumber(init.attributes["x"], "text x"),
       y: parseFiniteNumber(init.attributes["y"], "text y"),
@@ -57,6 +58,8 @@ export class TextProvider implements ShapeProvider {
         ? {}
         : { textAnchor: init.attributes["text-anchor"] })
     });
+    applyCommonStyleAttributes(shape, init.attributes);
+    return shape;
   }
 
   createFromSvg(

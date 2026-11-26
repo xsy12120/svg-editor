@@ -23,29 +23,13 @@ export class ShapeFactory implements ShapeCatalog, SvgShapeReader {
   }
 
   create(init: ShapeInit): Shape {
-    const shape = this.requireProvider(init.typeName).create(init);
-    this.applyCommonStyles(shape, init.attributes);
-    return shape;
+    return this.requireProvider(init.typeName).create(init);
   }
 
   readSvgElement(request: SvgShapeReadRequest): Shape {
-    const shape = this.resolveSvgProvider(request.element).createFromSvg(
+    return this.resolveSvgProvider(request.element).createFromSvg(
       request
     );
-    this.applyCommonStyles(shape, request.attributes);
-    return shape;
-  }
-
-  private applyCommonStyles(
-    shape: Shape,
-    attributes: Readonly<Record<string, string>>
-  ): void {
-    for (const name of ["fill", "stroke", "stroke-width"]) {
-      const value = attributes[name];
-      if (value !== undefined) {
-        shape.setAttribute(name, value);
-      }
-    }
   }
 
   createFromCliArgs(typeName: string, args: readonly string[]): Shape {

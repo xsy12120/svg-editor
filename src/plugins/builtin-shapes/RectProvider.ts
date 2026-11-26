@@ -4,7 +4,10 @@ import {
   type ShapeInit,
   type ShapeProvider
 } from "svg-editor-pj1/plugin-api";
-import { createDefaultSvgShape } from "./ShapeProviderSupport.js";
+import {
+  applyCommonStyleAttributes,
+  createDefaultSvgShape
+} from "./ShapeProviderSupport.js";
 
 export class RectProvider implements ShapeProvider {
   readonly typeName = "rect";
@@ -59,13 +62,15 @@ export class RectProvider implements ShapeProvider {
       throw new Error("rect height must be positive");
     }
 
-    return new Rect({
+    const shape = new Rect({
       id: init.id,
       x,
       y,
       width,
       height
     });
+    applyCommonStyleAttributes(shape, init.attributes);
+    return shape;
   }
 
   createFromSvg(

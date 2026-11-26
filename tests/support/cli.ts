@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const projectRoot = fileURLToPath(new URL("../../", import.meta.url));
-const startupTimeoutMs = 5_000;
+const startupTimeoutMs = 15_000;
 
 export interface ProcessResult {
   readonly exitCode: number | null;

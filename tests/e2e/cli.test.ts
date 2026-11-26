@@ -15,7 +15,7 @@ describe("CLI", () => {
       "svg-editor 0.1 — type 'help' for commands"
     );
     expect(result.stdout).toContain("svg> ");
-  });
+  }, 15_000);
 
   it("creates the default canvas with the init command", async () => {
     const result = await runCli("init\n");

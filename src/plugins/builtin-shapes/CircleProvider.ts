@@ -6,6 +6,7 @@ import {
 } from "svg-editor-pj1/plugin-api";
 import {
   assertShapeType,
+  applyCommonStyleAttributes,
   createDefaultSvgShape,
   parseFiniteNumber,
   parsePositiveNumber,
@@ -45,12 +46,14 @@ export class CircleProvider implements ShapeProvider {
 
   create(init: ShapeInit): Shape {
     assertShapeType(init, this.typeName);
-    return new Circle({
+    const shape = new Circle({
       id: init.id,
       cx: parseFiniteNumber(init.attributes["cx"], "circle cx"),
       cy: parseFiniteNumber(init.attributes["cy"], "circle cy"),
       r: parsePositiveNumber(init.attributes["r"], "circle r")
     });
+    applyCommonStyleAttributes(shape, init.attributes);
+    return shape;
   }
 
   createFromSvg(

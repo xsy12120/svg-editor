@@ -6,6 +6,7 @@ import {
 } from "svg-editor-pj1/plugin-api";
 import {
   assertShapeType,
+  applyCommonStyleAttributes,
   createDefaultSvgShape,
   parseFiniteNumber,
   requireAttribute,
@@ -47,13 +48,15 @@ export class LineProvider implements ShapeProvider {
 
   create(init: ShapeInit): Shape {
     assertShapeType(init, this.typeName);
-    return new Line({
+    const shape = new Line({
       id: init.id,
       x1: parseFiniteNumber(init.attributes["x1"], "line x1"),
       y1: parseFiniteNumber(init.attributes["y1"], "line y1"),
       x2: parseFiniteNumber(init.attributes["x2"], "line x2"),
       y2: parseFiniteNumber(init.attributes["y2"], "line y2")
     });
+    applyCommonStyleAttributes(shape, init.attributes);
+    return shape;
   }
 
   createFromSvg(
