@@ -42,6 +42,10 @@ import {
   builtinShapesManifest,
   builtinShapesPlugin
 } from "../plugins/builtin-shapes/index.js";
+import {
+  boxPlugin,
+  boxPluginManifest
+} from "../plugins/shape-box/index.js";
 
 export interface CreateCliApplicationOptions {
   readonly configPath?: string;
@@ -78,6 +82,15 @@ export async function createCliApplication(
   if (!builtinResult.success) {
     throw new Error(
       diagnosticFormatter.format(builtinResult.diagnostic)
+    );
+  }
+  const boxResult = pluginHost.activate(
+    boxPlugin,
+    boxPluginManifest
+  );
+  if (!boxResult.success) {
+    throw new Error(
+      diagnosticFormatter.format(boxResult.diagnostic)
     );
   }
   const svgCodec = new XmlSvgCodec(shapes);
