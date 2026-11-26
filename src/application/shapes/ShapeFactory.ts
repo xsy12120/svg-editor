@@ -15,6 +15,10 @@ export class ShapeFactory implements ShapeCatalog, SvgShapeReader {
     this.providers.set(provider.typeName, provider);
   }
 
+  has(typeName: string): boolean {
+    return this.providers.has(typeName);
+  }
+
   create(init: ShapeInit): Shape {
     const shape = this.requireProvider(init.typeName).create(init);
     for (const name of ["fill", "stroke", "stroke-width"]) {

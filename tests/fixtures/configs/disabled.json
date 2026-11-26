@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    {
+      "module": "../plugins/missing/index.js",
+      "enabled": false
+    },
+    { "module": "../plugins/terminal/index.js" }
+  ]
+}

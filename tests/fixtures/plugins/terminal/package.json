@@ -1,0 +1,10 @@
+{
+  "name": "@fixture/terminal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./index.js",
+  "contributes": {
+    "commands": ["fixture-terminal"]
+  }
+}

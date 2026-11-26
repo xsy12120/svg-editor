@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    {
+      "module": "../plugins/good/index.js",
+      "options": {
+        "suffix": "configured"
+      }
+    }
+  ]
+}

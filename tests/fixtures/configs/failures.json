@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    { "module": "../plugins/good/index.js" },
+    { "module": "../plugins/no-default/index.js" },
+    { "module": "../plugins/missing/index.js" },
+    { "module": "../plugins/mismatch/index.js" },
+    { "module": "../plugins/throws/index.js" },
+    { "module": "../plugins/terminal/index.js" }
+  ]
+}

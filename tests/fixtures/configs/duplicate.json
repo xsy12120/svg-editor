@@ -1,0 +1,7 @@
+{
+  "plugins": [
+    { "module": "../plugins/good/index.js" },
+    { "module": "../plugins/duplicate/index.js" },
+    { "module": "../plugins/terminal/index.js" }
+  ]
+}

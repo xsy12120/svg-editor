@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { runCli } from "../support/cli.js";
+
+const projectRoot = fileURLToPath(new URL("../../", import.meta.url));
 
 describe("CLI", () => {
   it("starts the editor and exits cleanly at end of input", async () => {
@@ -132,5 +136,76 @@ describe("CLI", () => {
     expect(result.stdout).toContain("move <id> <dx> <dy>");
     expect(result.stdout).toContain("group <newGroupId>");
     expect(result.stdout).toContain("undo");
+  });
+
+  it("loads a command plugin through --config", async () => {
+    const configPath = join(
+      projectRoot,
+      "tests",
+      "fixtures",
+      "configs",
+      "good.json"
+    );
+
+    const result = await runCli("fixture-good configured\n", {
+      cliArgs: ["--config", configPath]
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain(
+      "fixture-good configured [configured]"
+    );
+    expect(result.stderr).toBe("");
+  });
+
+  it("continues startup after plugin failures", async () => {
+    const configPath = join(
+      projectRoot,
+      "tests",
+      "fixtures",
+      "configs",
+      "failures.json"
+    );
+
+    const result = await runCli("fixture-terminal\n", {
+      cliArgs: ["--config", configPath]
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain(
+      "error: plugin has no default export: ../plugins/no-default/index.js"
+    );
+    expect(result.stdout).toContain(
+      "error: plugin not found: ../plugins/missing/index.js"
+    );
+    expect(result.stdout).toContain("fixture-terminal loaded");
+  });
+
+  it("continues with built-ins after an invalid plugin config", async () => {
+    const configPath = join(
+      projectRoot,
+      "tests",
+      "fixtures",
+      "configs",
+      "invalid.json"
+    );
+
+    const result = await runCli("init\n", {
+      cliArgs: ["--config", configPath]
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("error: invalid plugin config");
+    expect(result.stdout).toContain("canvas 800x600 created");
+  });
+
+  it("treats a missing --config argument as invalid configuration", async () => {
+    const result = await runCli("init\n", {
+      cliArgs: ["--config"]
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("error: invalid plugin config");
+    expect(result.stdout).toContain("canvas 800x600 created");
   });
 });

@@ -29,6 +29,14 @@ export type { ShapeCatalog } from "../application/shapes/ShapeCatalog.js";
 export type { ShapeInit } from "../application/shapes/ShapeInit.js";
 export type { ShapeProvider } from "../application/shapes/ShapeProvider.js";
 export type {
+  PluginActivationResult,
+  PluginContributions,
+  PluginManifest,
+  PluginOptions,
+  PluginRegistrationContext,
+  SvgPlugin
+} from "./Plugin.js";
+export type {
   SvgElementDescriptor,
   SvgShapeReader
 } from "../application/ports/SvgShapeReader.js";

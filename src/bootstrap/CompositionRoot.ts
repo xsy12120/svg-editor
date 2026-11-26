@@ -40,11 +40,18 @@ import { CliShapeDetailsRenderer } from "../interfaces/cli/CliShapeDetailsRender
 import { CliTreeRenderer } from "../interfaces/cli/CliTreeRenderer.js";
 import { NodeFileStore } from "../infrastructure/fs/NodeFileStore.js";
 import { XmlSvgCodec } from "../infrastructure/svg/XmlSvgCodec.js";
+import { PluginHost } from "../host/PluginHost.js";
+import { PluginLoader } from "../host/PluginLoader.js";
 
-export function createCliApplication(
+export interface CreateCliApplicationOptions {
+  readonly configPath?: string;
+}
+
+export async function createCliApplication(
   input: Readable,
-  output: Writable
-): CliApplication {
+  output: Writable,
+  options: CreateCliApplicationOptions = {}
+): Promise<CliApplication> {
   const session = new EditorSession();
   const invoker = new CommandInvoker(session);
   const processor = new CommandProcessor(invoker);
@@ -84,6 +91,21 @@ export function createCliApplication(
   commands.register(new UndoCommandProvider(invoker));
   commands.register(new RedoCommandProvider(invoker));
   commands.register(new HelpCommandProvider(commands));
+
+  if (options.configPath !== undefined) {
+    const loader = new PluginLoader(
+      new PluginHost({
+        shapes,
+        commands,
+        decorators: treeDecorators,
+        attributes: attributeHandlers
+      })
+    );
+    const result = await loader.loadConfigFile(options.configPath);
+    for (const error of result.errors) {
+      output.write(`${error}\n`);
+    }
+  }
 
   const treeRenderer = new CliTreeRenderer();
   const shapeDetailsRenderer = new CliShapeDetailsRenderer();

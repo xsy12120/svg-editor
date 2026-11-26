@@ -16,6 +16,10 @@ export class AttributeHandlerRegistry implements AttributeHandlerResolver {
     this.handlers.set(handler.name, handler);
   }
 
+  has(name: string): boolean {
+    return this.handlers.has(name);
+  }
+
   resolve(shape: Shape, attribute: string): AttributeHandler | undefined {
     const matches = [...this.handlers.values()].filter((handler) =>
       handler.handles(shape, attribute)

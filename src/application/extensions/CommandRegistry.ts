@@ -19,6 +19,10 @@ export class CommandRegistry<TContext>
     this.providers.set(provider.name, provider);
   }
 
+  has(name: string): boolean {
+    return this.providers.has(name);
+  }
+
   create(name: string, args: readonly string[]): ExecutableCommand<TContext> {
     try {
       const provider = this.providers.get(name);

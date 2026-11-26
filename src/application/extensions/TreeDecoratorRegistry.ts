@@ -17,6 +17,10 @@ export class TreeDecoratorRegistry implements TreeDecorationResolver {
     this.decorators.set(decorator.name, decorator);
   }
 
+  has(name: string): boolean {
+    return this.decorators.has(name);
+  }
+
   decorate(
     target: TreeDecorationTarget,
     context: TreeDecorationContext

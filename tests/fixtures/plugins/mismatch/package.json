@@ -1,0 +1,10 @@
+{
+  "name": "@fixture/mismatch",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./index.js",
+  "contributes": {
+    "commands": ["declared-command"]
+  }
+}
