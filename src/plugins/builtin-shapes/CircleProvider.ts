@@ -6,6 +6,7 @@ import {
 } from "../../plugin-api/index.js";
 import {
   assertShapeType,
+  createDefaultSvgShape,
   parseFiniteNumber,
   parsePositiveNumber,
   requireAttribute,
@@ -50,5 +51,11 @@ export class CircleProvider implements ShapeProvider {
       cy: parseFiniteNumber(init.attributes["cy"], "circle cy"),
       r: parsePositiveNumber(init.attributes["r"], "circle r")
     });
+  }
+
+  createFromSvg(
+    request: Parameters<ShapeProvider["createFromSvg"]>[0]
+  ): Shape {
+    return createDefaultSvgShape(this, request);
   }
 }

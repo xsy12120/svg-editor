@@ -20,7 +20,8 @@ function specialProvider(priority: number): ShapeProvider {
     },
     create(init) {
       return new Group(init.id);
-    }
+    },
+    createFromSvg: (request) => new Group(request.id)
   };
 }
 

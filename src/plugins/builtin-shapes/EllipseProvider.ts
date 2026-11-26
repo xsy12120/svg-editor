@@ -6,6 +6,7 @@ import {
 } from "../../plugin-api/index.js";
 import {
   assertShapeType,
+  createDefaultSvgShape,
   parseFiniteNumber,
   parsePositiveNumber,
   requireAttribute,
@@ -54,5 +55,11 @@ export class EllipseProvider implements ShapeProvider {
       rx: parsePositiveNumber(init.attributes["rx"], "ellipse rx"),
       ry: parsePositiveNumber(init.attributes["ry"], "ellipse ry")
     });
+  }
+
+  createFromSvg(
+    request: Parameters<ShapeProvider["createFromSvg"]>[0]
+  ): Shape {
+    return createDefaultSvgShape(this, request);
   }
 }

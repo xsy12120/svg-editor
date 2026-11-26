@@ -173,7 +173,8 @@ describe("PluginHost", () => {
             id: "dummy",
             attributes: {}
           }),
-          create: (init) => new Group(init.id)
+          create: (init) => new Group(init.id),
+          createFromSvg: (request) => new Group(request.id)
         });
         commandPlugin("dummy-command", () => "dummy")?.activate(context);
         context.registerTreeDecorator({

@@ -6,6 +6,7 @@ import {
 } from "../../plugin-api/index.js";
 import {
   assertShapeType,
+  createDefaultSvgShape,
   parseFiniteNumber,
   requireAttribute,
   requireShapeId
@@ -53,5 +54,11 @@ export class LineProvider implements ShapeProvider {
       x2: parseFiniteNumber(init.attributes["x2"], "line x2"),
       y2: parseFiniteNumber(init.attributes["y2"], "line y2")
     });
+  }
+
+  createFromSvg(
+    request: Parameters<ShapeProvider["createFromSvg"]>[0]
+  ): Shape {
+    return createDefaultSvgShape(this, request);
   }
 }

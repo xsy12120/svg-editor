@@ -1,4 +1,20 @@
-import type { ShapeInit } from "../../plugin-api/index.js";
+import type {
+  Shape,
+  ShapeInit,
+  ShapeProvider,
+  SvgShapeReadRequest
+} from "../../plugin-api/index.js";
+
+export function createDefaultSvgShape(
+  provider: ShapeProvider,
+  request: SvgShapeReadRequest
+): Shape {
+  return provider.create({
+    typeName: provider.typeName,
+    id: request.id,
+    attributes: request.attributes
+  });
+}
 
 export function requireShapeId(
   value: string | undefined,

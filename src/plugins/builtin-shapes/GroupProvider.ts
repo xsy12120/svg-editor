@@ -30,4 +30,14 @@ export class GroupProvider implements ShapeProvider {
     assertShapeType(init, this.typeName);
     return new Group(init.id);
   }
+
+  createFromSvg(
+    request: Parameters<ShapeProvider["createFromSvg"]>[0]
+  ): Shape {
+    const group = new Group(request.id);
+    for (const child of request.children) {
+      group.addChild(child);
+    }
+    return group;
+  }
 }

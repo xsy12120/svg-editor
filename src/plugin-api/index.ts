@@ -42,6 +42,7 @@ export type {
 } from "./Plugin.js";
 export type {
   SvgElementDescriptor,
+  SvgShapeReadRequest,
   SvgShapeReader
 } from "../application/ports/SvgShapeReader.js";
 export type { Document } from "../domain/model/Document.js";

@@ -6,6 +6,7 @@ import {
 } from "../../plugin-api/index.js";
 import {
   assertShapeType,
+  createDefaultSvgShape,
   parseFiniteNumber,
   parsePositiveNumber,
   requireAttribute,
@@ -56,5 +57,11 @@ export class TextProvider implements ShapeProvider {
         ? {}
         : { textAnchor: init.attributes["text-anchor"] })
     });
+  }
+
+  createFromSvg(
+    request: Parameters<ShapeProvider["createFromSvg"]>[0]
+  ): Shape {
+    return createDefaultSvgShape(this, request);
   }
 }

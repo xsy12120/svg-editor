@@ -3,7 +3,6 @@ import { XMLParser } from "fast-xml-parser";
 import type { ParsedSvgDocument } from "../../application/ports/SvgCodec.js";
 import type { SvgShapeReader } from "../../application/ports/SvgShapeReader.js";
 import { Document } from "../../domain/model/Document.js";
-import { ContainerShape } from "../../domain/shapes/ContainerShape.js";
 import type { Shape } from "../../domain/shapes/Shape.js";
 import { SvgIdAllocator } from "./SvgIdAllocator.js";
 import { SvgTransform } from "./SvgTransform.js";
@@ -95,27 +94,19 @@ export class SvgDocumentParser {
         shapeAttributes["text"] = this.textContentOf(node, elementName);
       }
 
-      const typeName = this.shapes.resolveSvgType({
-        tagName: elementName,
-        attributes: shapeAttributes
-      });
-      const shape = this.shapes.create({
-        typeName,
+      const children = node[elementName];
+      const parsedChildren = Array.isArray(children)
+        ? this.parseElements(children, idAllocator, warnings)
+        : [];
+      const shape = this.shapes.readSvgElement({
         id,
-        attributes: shapeAttributes
+        element: {
+          tagName: elementName,
+          attributes: shapeAttributes
+        },
+        attributes: shapeAttributes,
+        children: parsedChildren
       });
-      if (shape instanceof ContainerShape) {
-        const children = node[elementName];
-        if (Array.isArray(children)) {
-          for (const child of this.parseElements(
-            children,
-            idAllocator,
-            warnings
-          )) {
-            shape.addChild(child);
-          }
-        }
-      }
       if (rawTransform !== undefined) {
         SvgTransform.parse(rawTransform).apply(shape);
       }

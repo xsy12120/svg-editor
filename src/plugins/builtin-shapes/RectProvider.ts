@@ -4,6 +4,7 @@ import {
   type ShapeInit,
   type ShapeProvider
 } from "../../plugin-api/index.js";
+import { createDefaultSvgShape } from "./ShapeProviderSupport.js";
 
 export class RectProvider implements ShapeProvider {
   readonly typeName = "rect";
@@ -65,6 +66,12 @@ export class RectProvider implements ShapeProvider {
       width,
       height
     });
+  }
+
+  createFromSvg(
+    request: Parameters<ShapeProvider["createFromSvg"]>[0]
+  ): Shape {
+    return createDefaultSvgShape(this, request);
   }
 
   private requireValue(value: string | undefined, name: string): string {
