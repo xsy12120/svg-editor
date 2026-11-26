@@ -38,13 +38,25 @@ import { NodeDirectoryReader } from "../infrastructure/fs/NodeDirectoryReader.js
 import { XmlSvgCodec } from "../infrastructure/svg/XmlSvgCodec.js";
 import { PluginHost } from "../host/PluginHost.js";
 import { PluginLoader } from "../host/PluginLoader.js";
+import type {
+  PluginManifest,
+  PluginOptions,
+  SvgPlugin
+} from "../plugin-api/Plugin.js";
 import {
   builtinShapesManifest,
   builtinShapesPlugin
 } from "../plugins/builtin-shapes/index.js";
 
+export interface CodePluginActivation {
+  readonly plugin: SvgPlugin;
+  readonly manifest: PluginManifest;
+  readonly options?: PluginOptions;
+}
+
 export interface CreateCliApplicationOptions {
   readonly configPath?: string;
+  readonly codePlugins?: readonly CodePluginActivation[];
 }
 
 export async function createCliApplication(
@@ -79,6 +91,20 @@ export async function createCliApplication(
     throw new Error(
       diagnosticFormatter.format(builtinResult.diagnostic)
     );
+  }
+  if (options.codePlugins !== undefined) {
+    for (const activation of options.codePlugins) {
+      const result = pluginHost.activate(
+        activation.plugin,
+        activation.manifest,
+        activation.options
+      );
+      if (!result.success) {
+        output.write(
+          `${diagnosticFormatter.format(result.diagnostic)}\n`
+        );
+      }
+    }
   }
   const svgCodec = new XmlSvgCodec(shapes);
 
