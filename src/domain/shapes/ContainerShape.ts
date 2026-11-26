@@ -17,6 +17,10 @@ export abstract class ContainerShape extends Shape {
     return this.attachedToDocument;
   }
 
+  validateChildRemoval(child: Shape): void {
+    void child;
+  }
+
   addChild(shape: Shape): void {
     this.insertChildAt(shape, this.childShapes.length);
   }
@@ -88,23 +92,30 @@ export abstract class ContainerShape extends Shape {
 
   removeChild(id: string): Shape | undefined {
     this.assertDirectMutationAllowed();
-    return this.removeChildInternal(id);
+    return this.removeChildInternal(id, true);
   }
 
   /** @internal Document is the only owner of attached-tree mutation. */
   removeChildFromDocument(id: string): Shape | undefined {
-    return this.removeChildInternal(id);
+    return this.removeChildInternal(id, false);
   }
 
-  private removeChildInternal(id: string): Shape | undefined {
+  private removeChildInternal(
+    id: string,
+    validateRemoval: boolean
+  ): Shape | undefined {
     const directIndex = this.childShapes.findIndex((child) => child.id === id);
     if (directIndex >= 0) {
+      const child = this.childShapes[directIndex];
+      if (child !== undefined && validateRemoval) {
+        this.validateChildRemoval(child);
+      }
       return this.childShapes.splice(directIndex, 1)[0];
     }
 
     for (const child of this.childShapes) {
       if (child instanceof ContainerShape) {
-        const removed = child.removeChildFromDocument(id);
+        const removed = child.removeChildInternal(id, validateRemoval);
         if (removed !== undefined) {
           return removed;
         }

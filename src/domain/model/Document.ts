@@ -67,6 +67,14 @@ export class Document {
       return undefined;
     }
 
+    const indexedShape = this.shapesById.get(id);
+    if (
+      placement.parent !== null &&
+      indexedShape !== undefined
+    ) {
+      placement.parent.validateChildRemoval(indexedShape);
+    }
+
     const shape =
       placement.parent === null
         ? this.shapeList.splice(placement.index, 1)[0]
