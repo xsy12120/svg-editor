@@ -1,0 +1,24 @@
+init 800 600
+create rect bg 0 0 800 600 #ffffff
+create text title 20 40 "My Diagram"
+create circle c1 100 100 20 red
+create ellipse e1 300 100 30 20 #00ff00
+create line edge 200 200 400 200 black
+create g node
+create rect child 50 60 80 40 #aabbcc in node
+tree
+show title
+move c1 30 0
+undo
+redo
+set title text "My Diagram v2"
+undo
+redo
+group flow c1 edge
+create g outer
+addto outer flow
+ungroup flow
+front bg
+back bg
+tree node
+tree
