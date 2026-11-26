@@ -1,5 +1,5 @@
-import type { Document } from "../../domain/model/Document.js";
 import type { ShapeAttribute } from "../../domain/shapes/ShapeDescriptor.js";
+import type { EditorDocumentContext } from "../context/EditorCommandContext.js";
 import type { DocumentChangeState } from "../context/DocumentChangeState.js";
 
 export interface TreeDecorationTarget {
@@ -11,7 +11,7 @@ export interface TreeDecorationTarget {
 }
 
 export interface TreeDecorationContext {
-  readonly document: Document;
+  readonly document: EditorDocumentContext;
   readonly rootId?: string;
   readonly changes: DocumentChangeState;
 }

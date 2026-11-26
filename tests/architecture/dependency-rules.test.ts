@@ -98,4 +98,22 @@ describe("architecture dependency rules", () => {
     expect(source).not.toContain("EditorSession");
     expect(source).toContain("EditorCommandContext");
   });
+
+  it("does not expose a writable document through tree decorators", async () => {
+    const source = await readFile(
+      join(
+        projectRoot,
+        "src",
+        "application",
+        "extensions",
+        "TreeDecorator.ts"
+      ),
+      "utf8"
+    );
+
+    expect(source).not.toMatch(
+      /import type \{ Document \} from "\.\.\/\.\.\/domain\/model/
+    );
+    expect(source).toContain("EditorDocumentContext");
+  });
 });
