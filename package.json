@@ -22,6 +22,7 @@
     "build:core": "tsc -p tsconfig.build.json",
     "build:plugins": "npm run build --workspaces --if-present",
     "cli": "npm run build && node dist/main.js",
+    "metrics": "node scripts/generate-metrics.mjs",
     "typecheck": "tsc --noEmit",
     "verify:assembly": "npm run build && node scripts/verify-assembly.mjs",
     "pretest": "npm run build",
